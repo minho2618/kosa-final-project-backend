@@ -1,24 +1,27 @@
 package org.kosa.entity;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class Order {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long orderId;
 
 
-    Table "orders" {
-        "order_id" BIGINT [pk, increment]
-        "user_id" BIGINT [not null]
-        "status" orders_status_enum [not null, default: 'PENDING']
-            "created_at" TIMESTAMP [not null, default: `CURRENT_TIMESTAMP`]
-            "address" VARCHAR(300)
-    }
+    private Long userId;
 
-    Table "order_items" {
-        "order_item_id" BIGINT [pk, increment]
-        "order_id" BIGINT [not null]
-        "product_id" BIGINT [not null]
-        "quantity" INT [not null]
-        "unit_price" DECIMAL(12,2) [not null]
-        "discount_value" DECIMAL(12,2)
-        "total_price" DECIMAL(12,2) [not null]
-    }
+    private String status;
+
+    private LocalDateTime createdAt;
+
+    private String address;
+
+    private List<OrderItem> orderItemList;
+
 }
