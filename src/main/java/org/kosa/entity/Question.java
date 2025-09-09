@@ -32,4 +32,14 @@ public class Question {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Override
+    public String toString() {
+        return "Question{" +
+                "questionId=" + questionId +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", status=" + status +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }
