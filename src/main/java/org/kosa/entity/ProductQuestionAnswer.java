@@ -33,4 +33,13 @@ public class ProductQuestionAnswer {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "responder_id")
     private User users;
+
+    @Override
+    public String toString() {
+        return "ProductQuestionAnswer{" +
+                "answerId=" + answerId +
+                ", content='" + content + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }

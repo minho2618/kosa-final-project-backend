@@ -2,6 +2,9 @@ package org.kosa.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
@@ -20,6 +23,9 @@ public class QuestionAnswer {
     private Question question;
 
     private String content;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     @Override
     public String toString() {
