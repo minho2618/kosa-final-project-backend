@@ -25,7 +25,7 @@ public class ReviewPhoto {
             (fetch = FetchType.LAZY)
     @JoinColumn
             (name="reivew_id")
-    private Reviews reviews;
+    private Review review;
 
     @Override
     public String toString() {
@@ -34,7 +34,7 @@ public class ReviewPhoto {
                 ", url='" + url + '\'' +
                 ", sortOrder=" + sortOrder +
                 ", createdAt=" + createdAt +
-                ", reviews=" + reviews +
+                ", reviews=" + review +
                 '}';
     }
 }
