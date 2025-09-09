@@ -12,13 +12,17 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Builder
-public class Reviews {
+public class Review {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
+
     private Long rating;
+
     @Lob
     private String content;
+
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
 
     @ManyToOne
