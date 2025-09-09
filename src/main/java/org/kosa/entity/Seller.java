@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class Seller {
     @Id
-    private long userId;
+    private Long userId;
 
     private String sellerName;
 

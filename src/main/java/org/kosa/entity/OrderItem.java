@@ -1,16 +1,21 @@
 package org.kosa.entity;
 
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import lombok.*;
 
+import java.math.BigDecimal;
+
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Setter
+@Getter
+@Builder
 public class OrderItem {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderItemId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
@@ -18,9 +23,9 @@ public class OrderItem {
 
     private int quantity;
 
-    private double unitPrice;
+    private BigDecimal unitPrice;
 
-    private double discountValue;
+    private BigDecimal discountValue;
 
     private double totalPrice;
 

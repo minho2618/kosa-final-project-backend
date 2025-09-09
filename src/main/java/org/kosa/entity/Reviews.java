@@ -25,7 +25,7 @@ public class Reviews {
             (fetch = FetchType.LAZY)
     @JoinColumn
             (name ="product_id")
-    private Products products;
+    private Product product;
 
     @ManyToOne
             (fetch = FetchType.LAZY)
@@ -41,7 +41,7 @@ public class Reviews {
                 ", content='" + content + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", products=" + products +
+                ", products=" + product +
                 ", user=" + user +
                 '}';
     }
