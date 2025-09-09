@@ -46,13 +46,9 @@ public class SecurityConfig {
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .anyRequest().authenticated());
 
-        //추가!!! 중요!!!
-        //JWT 사용하는 순간...Session방식 사용안하게 된다.
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        // JWTFilter를 LoginFilter 앞에 추가!! jwt 토큰정보를 얘가 먼저 가로챈다.
         http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
-        //UsernamePasswordAuthenticationFilter 자리에 LoginFilter가 들어간다.
         http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil),
                 UsernamePasswordAuthenticationFilter.class);
 
