@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.kosa.enums.ProductCategory;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,20 +15,27 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Builder
-public class Products {
+public class Product {
     @Id @Column(name= "product_id") @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
     @Column(length = 150)
     private String name;
+
     @Lob
     private String description;
-    private double price;
-    private int category;
-    private double discountValue;
+
+    private BigDecimal price;
+
+    private ProductCategory category;
+
+    private BigDecimal discountValue;
+
     private Boolean isActive;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
+
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 

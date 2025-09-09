@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
+import org.kosa.enums.SellerRole;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class Seller {
     @Id
-    private long userId;
+    private Long userId;
 
     private String sellerName;
 
@@ -37,6 +38,9 @@ public class Seller {
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @Enumerated(EnumType.STRING)
+    private SellerRole role;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)

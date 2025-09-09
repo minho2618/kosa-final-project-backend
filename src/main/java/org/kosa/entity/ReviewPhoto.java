@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Builder
-public class Review_photos {
+public class ReviewPhoto {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long photoId;
     @Column(length = 512)

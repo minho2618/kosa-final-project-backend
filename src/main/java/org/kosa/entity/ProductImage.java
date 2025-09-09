@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @Getter
 @Builder
-public class Product_images {
+public class ProductImage {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
     @Column(length = 512)
@@ -22,7 +22,7 @@ public class Product_images {
             (fetch = FetchType.LAZY)
     @JoinColumn
             (name="product_id")
-    private Products products;
+    private Product product;
 
     @Override
     public String toString() {

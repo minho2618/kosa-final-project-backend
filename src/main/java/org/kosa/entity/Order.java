@@ -3,9 +3,10 @@ package org.kosa.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
+import org.kosa.enums.OrderStatus;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,14 +26,13 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String status;
+    private OrderStatus status;
 
     private LocalDateTime createdAt;
 
     private String address;
 
-    @OneToMany
-    @Cascade(CascadeType.REMOVE)
-    private List<OrderItem> orderItemList;
-
+    @OneToMany(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "order_id")  // 외래키 컬럼 지정
+    private List<OrderItem> orderItems = new ArrayList<>();
 }
