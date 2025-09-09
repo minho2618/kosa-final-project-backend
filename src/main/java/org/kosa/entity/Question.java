@@ -2,6 +2,8 @@ package org.kosa.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.kosa.enums.QuestionStatus;
 
 import java.time.LocalDateTime;
 
@@ -17,15 +19,17 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long questionId;
 
-    @OneToOne()
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private String title;
 
     private String content;
 
-    private int status;
+    private QuestionStatus status;
 
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
 }
