@@ -69,7 +69,7 @@ public class JWTUtil {
         log.info("createJwt  call");
         return Jwts.builder()
                 .claim("userId", user.getUserId())//멤버번호
-                .claim("username", user.getUsername()) //이름
+                .claim("username", user.getName()) //이름
                 .claim("email", user.getEmail()) //아이디
                 .claim("role", role) //Role
                 .issuedAt(new Date(System.currentTimeMillis())) //현재로그인된 시간
