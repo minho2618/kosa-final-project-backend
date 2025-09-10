@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class Product {
-    @Id @Column(name= "product_id") @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
     @Column(length = 150)
@@ -58,7 +58,6 @@ public class Product {
                 ", isActive=" + isActive +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", seller=" + seller +
                 '}';
     }
 }
