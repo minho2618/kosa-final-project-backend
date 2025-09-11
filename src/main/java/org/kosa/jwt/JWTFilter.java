@@ -5,9 +5,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.kosa.entity.Users;
-import org.kosa.enums.UserRole;
-import org.kosa.security.CustomUserDetails;
+import org.kosa.entity.Member;
+import org.kosa.enums.MemberRole;
+import org.kosa.security.CustomMemberDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,21 +43,21 @@ public class JWTFilter extends OncePerRequestFilter {
             return;
         }
 
-        Long userId = jwtUtil.getUserId(token);
+        Long memberId = jwtUtil.getMemberId(token);
         String username = jwtUtil.getUsername(token);
         String email = jwtUtil.getEmail(token);
         String role = jwtUtil.getRole(token);
 
-        Users users = new Users();
-        users.setUserId(userId);
-        users.setEmail(email);
-        users.setUsername(username);
-        users.setRole(UserRole.valueOf(role));
+        Member member = new Member();
+        member.setMemberId(memberId);
+        member.setEmail(email);
+        member.setUsername(username);
+        member.setRole(MemberRole.valueOf(role));
 
-        CustomUserDetails customUserDetails = new CustomUserDetails(users);
+        CustomMemberDetails customMemberDetails = new CustomMemberDetails(member);
 
         Authentication authToken =
-                new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+                new UsernamePasswordAuthenticationToken(customMemberDetails, null, customMemberDetails.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authToken);
         filterChain.doFilter(request, response);

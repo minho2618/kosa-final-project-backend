@@ -39,8 +39,8 @@ public class ProductQuestion {
     private LocalDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private Users users;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")

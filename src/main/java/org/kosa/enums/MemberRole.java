@@ -1,6 +1,6 @@
 package org.kosa.enums;
 
-public enum UserRole {
+public enum MemberRole {
     ROLE_CUSTOMER,
     ROLE_SELLER,
     ROLE_ADMIN,

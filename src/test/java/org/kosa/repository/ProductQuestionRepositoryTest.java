@@ -3,14 +3,14 @@ package org.kosa.repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.kosa.entity.Member;
 import org.kosa.entity.Product;
 import org.kosa.entity.ProductQuestion;
 import org.kosa.entity.Seller;
-import org.kosa.entity.Users;
 import org.kosa.enums.ProductCategory;
 import org.kosa.enums.ProductQuestionsStatus;
 import org.kosa.enums.SellerRole;
-import org.kosa.enums.UserRole;
+import org.kosa.enums.MemberRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,23 +38,23 @@ class ProductQuestionRepositoryTest {
 
     private Product testProduct1;
     private Product testProduct2;
-    private Users testUser1;
-    private Users testUser2;
+    private Member testUser1;
+    private Member testUser2;
 
     @BeforeEach
     void setUp() {
-        testUser1 = usersRepository.save(Users.builder().username("user1").email("user1@test.com").role(UserRole.ROLE_CUSTOMER).build());
-        testUser2 = usersRepository.save(Users.builder().username("user2").email("user2@test.com").role(UserRole.ROLE_CUSTOMER).build());
+        testUser1 = usersRepository.save(Member.builder().username("user1").email("user1@test.com").role(MemberRole.ROLE_CUSTOMER).build());
+        testUser2 = usersRepository.save(Member.builder().username("user2").email("user2@test.com").role(MemberRole.ROLE_CUSTOMER).build());
 
-        Users sellerUser = usersRepository.save(Users.builder().username("seller").email("seller@test.com").role(UserRole.ROLE_SELLER).build());
-        Seller seller = sellerRepository.save(Seller.builder().users(sellerUser).userId(sellerUser.getUserId()).sellerName("테스트 농장").role(SellerRole.authenticated).build());
+        Member sellerUser = usersRepository.save(Member.builder().username("seller").email("seller@test.com").role(MemberRole.ROLE_SELLER).build());
+        Seller seller = sellerRepository.save(Seller.builder().member(sellerUser).memberId(sellerUser.getMemberId()).sellerName("테스트 농장").role(SellerRole.authenticated).build());
 
         testProduct1 = productRepository.save(Product.builder().name("테스트 상품 1").price(BigDecimal.TEN).category(ProductCategory.기타).seller(seller).isActive(true).build());
         testProduct2 = productRepository.save(Product.builder().name("테스트 상품 2").price(BigDecimal.ONE).category(ProductCategory.기타).seller(seller).isActive(true).build());
 
-        productQuestionRepository.save(ProductQuestion.builder().product(testProduct1).users(testUser1).content("상품1에 대한 질문1").status(ProductQuestionsStatus.OPEN).build());
-        productQuestionRepository.save(ProductQuestion.builder().product(testProduct1).users(testUser2).content("상품1에 대한 질문2").status(ProductQuestionsStatus.ANSWERED).build());
-        productQuestionRepository.save(ProductQuestion.builder().product(testProduct2).users(testUser1).content("상품2에 대한 질문1").status(ProductQuestionsStatus.OPEN).build());
+        productQuestionRepository.save(ProductQuestion.builder().product(testProduct1).member(testUser1).content("상품1에 대한 질문1").status(ProductQuestionsStatus.OPEN).build());
+        productQuestionRepository.save(ProductQuestion.builder().product(testProduct1).member(testUser2).content("상품1에 대한 질문2").status(ProductQuestionsStatus.ANSWERED).build());
+        productQuestionRepository.save(ProductQuestion.builder().product(testProduct2).member(testUser1).content("상품2에 대한 질문1").status(ProductQuestionsStatus.OPEN).build());
     }
 
     @Test
@@ -112,7 +112,7 @@ class ProductQuestionRepositoryTest {
         // then
         assertThat(foundQuestion).isNotNull();
         assertThat(foundQuestion.getContent()).isEqualTo(question.getContent());
-        assertThat(foundQuestion.getUsers()).isNotNull();
+        assertThat(foundQuestion.getMember()).isNotNull();
         assertThat(foundQuestion.getProduct()).isNotNull();
     }
 }
