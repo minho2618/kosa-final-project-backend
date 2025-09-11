@@ -1,10 +1,7 @@
 package org.kosa.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 import org.kosa.enums.SellerRole;
@@ -16,10 +13,11 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
+@Builder
 @Slf4j
 public class Seller {
     @Id
-    private Long user_id;
+    private Long userId;
 
     private String sellerName;
 
@@ -42,10 +40,10 @@ public class Seller {
     @Enumerated(EnumType.STRING)
     private SellerRole role;
 
+    @OneToOne
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private Users users;
+    private Users user;
 
     @Override
     public String toString() {

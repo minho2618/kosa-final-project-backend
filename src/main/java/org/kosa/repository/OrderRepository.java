@@ -16,13 +16,17 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    // User로 주문 조회
-    Optional<List<Order>> findByUser(Users user);
 
-    Optional<Page<Order>> findByUser(Users user, Pageable pageable);
+    // 특정 주문 조회
+    Optional<Order> findByOrderId(Long orderId);
 
-    // 상태로 조회
-    Optional<List<Order>> findByStatus(OrderStatus status);
+    // 사용자의 전체 주문내역 조회
+    Optional<List<Order>> findByUser(Users users);
+
+//    Optional<Page<Order>> findByUsers(Users users, Pageable pageable);
+
+//    // 상태로 조회
+//    Optional<List<Order>> findByStatus(OrderStatus status);
 
     // 배송 조회(BUY-ORD-002)
 

@@ -1,10 +1,7 @@
 package org.kosa.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -19,6 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Builder
 @Slf4j
 public class ProductQuestion {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
