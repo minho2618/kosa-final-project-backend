@@ -38,7 +38,7 @@ public class ProductQuestion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Users users;
 
     @Override
     public String toString() {

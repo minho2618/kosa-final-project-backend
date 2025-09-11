@@ -2,8 +2,8 @@ package org.kosa.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.kosa.entity.User;
-import org.kosa.repository.UserRepository;
+import org.kosa.entity.Users;
+import org.kosa.repository.UsersRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,14 +14,14 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class CustomUserDetailsService implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final UsersRepository usersRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("UserDetailsService loadUserByUsername() call... username {}", username);
-        User findUser = userRepository.findByEmail(username);
-        if (findUser != null) {
-            log.info("findMember... 멤버 발견.. {}", findUser);
-            return new CustomUserDetails(findUser);
+        Users findUsers = usersRepository.findByEmail(username);
+        if (findUsers != null) {
+            log.info("findMember... 멤버 발견.. {}", findUsers);
+            return new CustomUserDetails(findUsers);
         }
         return null;
     }

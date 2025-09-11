@@ -32,7 +32,7 @@ public class ProductQuestionAnswer {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "responder_id")
-    private User users;
+    private Users users;
 
     @Override
     public String toString() {

@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.kosa.entity.User;
+import org.kosa.entity.Users;
 import org.kosa.security.CustomUserDetails;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -60,17 +60,17 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter{
         String role = auth.getAuthority();
 
         String token = jwtUtil.createJwt(
-                customUserDetails.getUser(), role, 1000L*60*10L);
-        System.out.println("@@@@@@@@@@@@@@@@@@ getMember "+ customUserDetails.getUser() +" @@@@@@@@@@@@@@@@@@");
+                customUserDetails.getUsers(), role, 1000L*60*10L);
+        System.out.println("@@@@@@@@@@@@@@@@@@ getMember "+ customUserDetails.getUsers() +" @@@@@@@@@@@@@@@@@@");
 
         response.addHeader("Authorization", "Bearer " + token);
 
         Map<String, Object> map = new HashMap<>();
-        User user= customUserDetails.getUser();
-        map.put("userId",user.getUserId());
-        map.put("email", user.getEmail());
-        map.put("name", user.getName());
-        map.put("address", user.getAddress());
+        Users users = customUserDetails.getUsers();
+        map.put("userId", users.getUserId());
+        map.put("email", users.getEmail());
+        map.put("name", users.getName());
+        map.put("address", users.getAddress());
 
         Gson gson= new Gson();
         String arr = gson.toJson(map);
