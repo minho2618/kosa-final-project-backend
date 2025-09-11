@@ -27,6 +27,6 @@ public class OrderItem {
 
     private BigDecimal discountValue;
 
-    private double totalPrice;
+    private BigDecimal totalPrice;
 
 }

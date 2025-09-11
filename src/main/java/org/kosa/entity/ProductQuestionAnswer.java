@@ -26,9 +26,8 @@ public class ProductQuestionAnswer {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
-    private ProductQuestion productQuestion;
+    @Column(name = "product_question_id", unique = true)
+    private Long productQuestionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "responder_id")

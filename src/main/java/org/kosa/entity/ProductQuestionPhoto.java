@@ -21,8 +21,4 @@ public class ProductQuestionPhoto {
     private String url;
 
     private int sortOrder;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
-    private ProductQuestion productQuestion;
 }

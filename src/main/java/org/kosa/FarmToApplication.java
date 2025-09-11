@@ -14,6 +14,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.math.BigDecimal;
+
 @Slf4j
 @SpringBootApplication
 public class FarmToApplication implements CommandLineRunner{
@@ -26,19 +27,12 @@ public class FarmToApplication implements CommandLineRunner{
 
     @Autowired
     private ProductRepository productRepository;         //
-
+  
     @Override
-
-    @Transactional
     public void run(String... args) throws Exception {
-
-
-
-
-
+        log.info("hi");
     }
-
-
+  
     public static void main(String[] args) {
         SpringApplication.run(FarmToApplication.class, args);
     }

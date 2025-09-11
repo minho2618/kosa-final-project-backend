@@ -32,6 +32,11 @@ public class User {
 
     private UserRole role;
 
+    @Column(length = 255)
+    private String address;
+
+    @Column(length = 20)
+    private String name;
     @CreationTimestamp
     private LocalDateTime createdAt;
 
