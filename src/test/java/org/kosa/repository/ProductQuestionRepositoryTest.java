@@ -1,44 +1,118 @@
 package org.kosa.repository;
 
-import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.kosa.entity.Product;
+import org.kosa.entity.ProductQuestion;
+import org.kosa.entity.Seller;
+import org.kosa.entity.Users;
+import org.kosa.enums.ProductCategory;
+import org.kosa.enums.ProductQuestionsStatus;
+import org.kosa.enums.SellerRole;
+import org.kosa.enums.UserRole;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.math.BigDecimal;
+import java.util.List;
 
-@RequiredArgsConstructor
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+@Transactional
 class ProductQuestionRepositoryTest {
 
-    private final ProductQuestionRepository productQuestionRepository;
+    @Autowired
+    private ProductQuestionRepository productQuestionRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private SellerRepository sellerRepository;
+
+    @Autowired
+    private UsersRepository usersRepository;
+
+    private Product testProduct1;
+    private Product testProduct2;
+    private Users testUser1;
+    private Users testUser2;
+
+    @BeforeEach
+    void setUp() {
+        testUser1 = usersRepository.save(Users.builder().username("user1").email("user1@test.com").role(UserRole.ROLE_CUSTOMER).build());
+        testUser2 = usersRepository.save(Users.builder().username("user2").email("user2@test.com").role(UserRole.ROLE_CUSTOMER).build());
+
+        Users sellerUser = usersRepository.save(Users.builder().username("seller").email("seller@test.com").role(UserRole.ROLE_SELLER).build());
+        Seller seller = sellerRepository.save(Seller.builder().users(sellerUser).userId(sellerUser.getUserId()).sellerName("테스트 농장").role(SellerRole.authenticated).build());
+
+        testProduct1 = productRepository.save(Product.builder().name("테스트 상품 1").price(BigDecimal.TEN).category(ProductCategory.기타).seller(seller).isActive(true).build());
+        testProduct2 = productRepository.save(Product.builder().name("테스트 상품 2").price(BigDecimal.ONE).category(ProductCategory.기타).seller(seller).isActive(true).build());
+
+        productQuestionRepository.save(ProductQuestion.builder().product(testProduct1).users(testUser1).content("상품1에 대한 질문1").status(ProductQuestionsStatus.OPEN).build());
+        productQuestionRepository.save(ProductQuestion.builder().product(testProduct1).users(testUser2).content("상품1에 대한 질문2").status(ProductQuestionsStatus.ANSWERED).build());
+        productQuestionRepository.save(ProductQuestion.builder().product(testProduct2).users(testUser1).content("상품2에 대한 질문1").status(ProductQuestionsStatus.OPEN).build());
+    }
 
     @Test
+    @DisplayName("상품으로 질문 목록 조회")
     void findByProduct() {
+        // when
+        List<ProductQuestion> questions = productQuestionRepository.findByProduct(testProduct1);
+
+        // then
+        assertThat(questions).hasSize(2);
     }
 
     @Test
-    void testFindByProduct() {
+    @DisplayName("사용자로 질문 목록 조회")
+    void findByUsers() {
+        // when
+        List<ProductQuestion> questions = productQuestionRepository.findByUsers(testUser1);
+
+        // then
+        assertThat(questions).hasSize(2);
     }
 
     @Test
-    void findByUser() {
-    }
-
-    @Test
+    @DisplayName("상태로 질문 목록 조회")
     void findByStatus() {
+        // when
+        List<ProductQuestion> pendingQuestions = productQuestionRepository.findByStatus(ProductQuestionsStatus.OPEN);
+        List<ProductQuestion> answeredQuestions = productQuestionRepository.findByStatus(ProductQuestionsStatus.ANSWERED);
+
+        // then
+        assertThat(pendingQuestions).hasSize(2);
+        assertThat(answeredQuestions).hasSize(1);
     }
 
     @Test
-    void findByUpdatedAtAfter() {
-    }
-
-    @Test
+    @DisplayName("답변 대기 중인 질문 조회")
     void findPendingQuestions() {
+        // when
+        List<ProductQuestion> pendingQuestions = productQuestionRepository.findPendingQuestions(testProduct1, ProductQuestionsStatus.OPEN);
+
+        // then
+        assertThat(pendingQuestions).hasSize(1);
+        assertThat(pendingQuestions.get(0).getContent()).isEqualTo("상품1에 대한 질문1");
     }
 
     @Test
-    void updateStatusByIds() {
-    }
-
-    @Test
+    @DisplayName("질문 ID로 상세 정보 조회")
     void findByIdWithDetails() {
+        // given
+        ProductQuestion question = productQuestionRepository.findByUsers(testUser1).get(0);
+
+        // when
+        ProductQuestion foundQuestion = productQuestionRepository.findByIdWithDetails(question.getQuestionId());
+
+        // then
+        assertThat(foundQuestion).isNotNull();
+        assertThat(foundQuestion.getContent()).isEqualTo(question.getContent());
+        assertThat(foundQuestion.getUsers()).isNotNull();
+        assertThat(foundQuestion.getProduct()).isNotNull();
     }
 }

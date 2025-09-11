@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UsersRepository extends JpaRepository<Users, Long> {
+
     Optional<Users> findByUserId(Long id);
+
     List<Users> findByRole(UserRole role);
+
     Users findByEmail(String email);
 
 }

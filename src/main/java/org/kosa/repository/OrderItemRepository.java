@@ -1,5 +1,6 @@
 package org.kosa.repository;
 
+import org.kosa.entity.Order;
 import org.kosa.entity.OrderItem;
 import org.kosa.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,9 +9,13 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
+
+    // 주문으로 조회
+    Optional<List<OrderItem>> findByOrder(Order order);
 
     // Product로 조회
     List<OrderItem> findByProduct(Product product);
