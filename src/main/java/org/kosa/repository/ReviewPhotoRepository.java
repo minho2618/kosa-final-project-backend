@@ -8,6 +8,6 @@ import java.util.List;
 public interface ReviewPhotoRepository extends JpaRepository<ReviewPhoto, Long> {
 
     // 특정 리뷰의 모든 사진
-    List<ReviewPhoto> findByreivew_id(Long reviewId);
+    // List<ReviewPhoto> findByreivew_id(Long reviewId);
 
 }

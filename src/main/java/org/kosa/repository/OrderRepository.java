@@ -1,7 +1,7 @@
 package org.kosa.repository;
 
 import org.kosa.entity.Order;
-import org.kosa.entity.User;
+import org.kosa.entity.Users;
 import org.kosa.enums.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,9 +17,9 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
     // User로 주문 조회
-    Optional<List<Order>> findByUser(User user);
+    Optional<List<Order>> findByUser(Users user);
 
-    Optional<Page<Order>> findByUser(User user, Pageable pageable);
+    Optional<Page<Order>> findByUser(Users user, Pageable pageable);
 
     // 상태로 조회
     Optional<List<Order>> findByStatus(OrderStatus status);
