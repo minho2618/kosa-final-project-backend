@@ -20,8 +20,8 @@ public class Question {
     private Long questionId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private Users users;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     private String title;
 

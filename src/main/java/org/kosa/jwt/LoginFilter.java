@@ -7,8 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.kosa.entity.Users;
-import org.kosa.security.CustomUserDetails;
+import org.kosa.entity.Member;
+import org.kosa.security.CustomMemberDetails;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,9 +49,9 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter{
                                             Authentication authentication) throws  IOException{
         response.setContentType("text/html;charset=UTF-8");
        log.info("로그인 성공 ......");
-        CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+        CustomMemberDetails customMemberDetails = (CustomMemberDetails) authentication.getPrincipal();
         
-        String username = customUserDetails.getUsername();//아이디
+        String username = customMemberDetails.getUsername();//아이디
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
@@ -60,17 +60,17 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter{
         String role = auth.getAuthority();
 
         String token = jwtUtil.createJwt(
-                customUserDetails.getUsers(), role, 1000L*60*10L);
-        System.out.println("@@@@@@@@@@@@@@@@@@ getMember "+ customUserDetails.getUsers() +" @@@@@@@@@@@@@@@@@@");
+                customMemberDetails.getMember(), role, 1000L*60*10L);
+        System.out.println("@@@@@@@@@@@@@@@@@@ getMember "+ customMemberDetails.getMember() +" @@@@@@@@@@@@@@@@@@");
 
         response.addHeader("Authorization", "Bearer " + token);
 
         Map<String, Object> map = new HashMap<>();
-        Users users = customUserDetails.getUsers();
-        map.put("userId", users.getUserId());
-        map.put("email", users.getEmail());
-        map.put("name", users.getName());
-        map.put("address", users.getAddress());
+        Member member = customMemberDetails.getMember();
+        map.put("memberId", member.getMemberId());
+        map.put("email", member.getEmail());
+        map.put("name", member.getName());
+        map.put("address", member.getAddress());
 
         Gson gson= new Gson();
         String arr = gson.toJson(map);

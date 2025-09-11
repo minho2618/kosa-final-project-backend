@@ -19,15 +19,6 @@ import java.math.BigDecimal;
 @SpringBootApplication
 public class FarmToApplication implements CommandLineRunner{
 
-    @Autowired
-    private ProductImageRepository productImageRepository;
-
-    @Autowired
-    private SellerRepository sellerRepository;
-
-    @Autowired
-    private ProductRepository productRepository;         //
-  
     @Override
     public void run(String... args) throws Exception {
         log.info("hi");

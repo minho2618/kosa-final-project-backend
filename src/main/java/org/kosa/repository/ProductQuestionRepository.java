@@ -1,8 +1,8 @@
 package org.kosa.repository;
 
+import org.kosa.entity.Member;
 import org.kosa.entity.Product;
 import org.kosa.entity.ProductQuestion;
-import org.kosa.entity.Users;
 import org.kosa.enums.ProductQuestionsStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +22,8 @@ public interface ProductQuestionRepository extends JpaRepository<ProductQuestion
     List<ProductQuestion> findByProduct(Product product);
     Page<ProductQuestion> findByProduct(Product product, Pageable pageable);
 
-    // User별 질문 조회
-    List<ProductQuestion> findByUsers(Users users);
+    // Member별 질문 조회
+    List<ProductQuestion> findByMember(Member member);
 
     // 상태별 조회
     List<ProductQuestion> findByStatus(ProductQuestionsStatus status);
@@ -41,6 +41,6 @@ public interface ProductQuestionRepository extends JpaRepository<ProductQuestion
     int updateStatusByIds(@Param("ids") List<Long> ids, @Param("status") ProductQuestionsStatus status);
 
     // 연관 엔터티와 함께 조회
-    @Query("SELECT DISTINCT pq FROM ProductQuestion pq LEFT JOIN FETCH pq.users LEFT JOIN FETCH pq.product WHERE pq.questionId = :id")
+    @Query("SELECT DISTINCT pq FROM ProductQuestion pq LEFT JOIN FETCH pq.member LEFT JOIN FETCH pq.product WHERE pq.questionId = :id")
     ProductQuestion findByIdWithDetails(@Param("id") Long id);
 }
