@@ -7,7 +7,7 @@ import org.kosa.entity.*;
 import org.kosa.enums.ProductCategory;
 import org.kosa.enums.ProductQuestionsStatus;
 import org.kosa.enums.SellerRole;
-import org.kosa.enums.UserRole;
+import org.kosa.enums.MemberRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,11 +30,11 @@ class ProductQuestionPhotoRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Users user = usersRepository.save(Users.builder().username("photo_user").role(UserRole.ROLE_CUSTOMER).build());
-        Users sellerUser = usersRepository.save(Users.builder().username("photo_seller").role(UserRole.ROLE_SELLER).build());
-        Seller seller = sellerRepository.save(Seller.builder().users(sellerUser).userId(sellerUser.getUserId()).sellerName("사진 농장").role(SellerRole.authenticated).build());
+        Member user = usersRepository.save(Member.builder().username("photo_user").role(MemberRole.ROLE_CUSTOMER).build());
+        Member sellerUser = usersRepository.save(Member.builder().username("photo_seller").role(MemberRole.ROLE_SELLER).build());
+        Seller seller = sellerRepository.save(Seller.builder().member(sellerUser).memberId(sellerUser.getMemberId()).sellerName("사진 농장").role(SellerRole.authenticated).build());
         Product product = productRepository.save(Product.builder().name("사진 상품").seller(seller).category(ProductCategory.기타).isActive(true).price(BigDecimal.TEN).build());
-        testQuestion = questionRepository.save(ProductQuestion.builder().product(product).users(user).content("사진 질문").status(ProductQuestionsStatus.OPEN).build());
+        testQuestion = questionRepository.save(ProductQuestion.builder().product(product).member(user).content("사진 질문").status(ProductQuestionsStatus.OPEN).build());
 
         ProductQuestionPhoto photo1 = new ProductQuestionPhoto();
         photo1.setUrl("/photos/q1/1.jpg");

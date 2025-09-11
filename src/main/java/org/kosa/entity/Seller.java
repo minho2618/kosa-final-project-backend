@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class Seller {
     @Id
-    private Long userId;
+    private Long memberId;
 
     private String sellerName;
 
@@ -42,8 +42,8 @@ public class Seller {
 
     @OneToOne
     @MapsId
-    @JoinColumn(name = "user_id")
-    private Users user;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @Override
     public String toString() {

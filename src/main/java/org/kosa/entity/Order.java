@@ -23,8 +23,8 @@ public class Order {
     private Long orderId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private Users user;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     private OrderStatus status;
 

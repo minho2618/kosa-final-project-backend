@@ -1,18 +1,18 @@
 package org.kosa.repository;
 
-import org.kosa.entity.Users;
-import org.kosa.enums.UserRole;
+import org.kosa.entity.Member;
+import org.kosa.enums.MemberRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UsersRepository extends JpaRepository<Users, Long> {
+public interface UsersRepository extends JpaRepository<Member, Long> {
 
-    Optional<Users> findByUserId(Long id);
+    Optional<Member> findByMemberId(Long id);
 
-    List<Users> findByRole(UserRole role);
+    List<Member> findByRole(MemberRole role);
 
-    Users findByEmail(String email);
+    Member findByEmail(String email);
 
 }

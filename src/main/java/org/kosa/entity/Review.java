@@ -34,8 +34,8 @@ public class Review {
     @ManyToOne
             (fetch = FetchType.LAZY)
     @JoinColumn
-            (name="user_id")
-    private Users users;
+            (name="member_id")
+    private Member member;
 
     @Override
     public String toString() {
@@ -46,7 +46,6 @@ public class Review {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", products=" + product +
-                ", user=" + users +
                 '}';
     }
 }

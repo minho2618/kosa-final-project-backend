@@ -7,7 +7,7 @@ import org.kosa.entity.*;
 import org.kosa.enums.OrderStatus;
 import org.kosa.enums.ProductCategory;
 import org.kosa.enums.SellerRole;
-import org.kosa.enums.UserRole;
+import org.kosa.enums.MemberRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,14 +33,14 @@ class OrderItemRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Users user = usersRepository.save(Users.builder().username("order_user").role(UserRole.ROLE_CUSTOMER).build());
-        Users sellerUser = usersRepository.save(Users.builder().username("order_seller").role(UserRole.ROLE_SELLER).build());
-        Seller seller = sellerRepository.save(Seller.builder().users(sellerUser).userId(sellerUser.getUserId()).sellerName("주문 농장").role(SellerRole.authenticated).build());
+        Member user = usersRepository.save(Member.builder().username("order_user").role(MemberRole.ROLE_CUSTOMER).build());
+        Member sellerUser = usersRepository.save(Member.builder().username("order_seller").role(MemberRole.ROLE_SELLER).build());
+        Seller seller = sellerRepository.save(Seller.builder().member(sellerUser).memberId(sellerUser.getMemberId()).sellerName("주문 농장").role(SellerRole.authenticated).build());
 
         testProduct1 = productRepository.save(Product.builder().name("주문 상품 1").price(new BigDecimal("100")).seller(seller).category(ProductCategory.기타).isActive(true).build());
         testProduct2 = productRepository.save(Product.builder().name("주문 상품 2").price(new BigDecimal("200")).seller(seller).category(ProductCategory.기타).isActive(true).build());
 
-        testOrder = orderRepository.save(Order.builder().user(user).status(OrderStatus.PENDING).address("주소").build());
+        testOrder = orderRepository.save(Order.builder().member(user).status(OrderStatus.PENDING).address("주소").build());
 
         orderItemRepository.save(OrderItem.builder().order(testOrder).product(testProduct1).quantity(5).totalPrice(new BigDecimal("500")).build());
         orderItemRepository.save(OrderItem.builder().order(testOrder).product(testProduct2).quantity(10).totalPrice(new BigDecimal("2000")).build());

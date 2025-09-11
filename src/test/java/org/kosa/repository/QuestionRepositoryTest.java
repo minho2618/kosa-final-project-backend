@@ -4,9 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.kosa.entity.Question;
-import org.kosa.entity.Users;
+import org.kosa.entity.Member;
 import org.kosa.enums.QuestionStatus;
-import org.kosa.enums.UserRole;
+import org.kosa.enums.MemberRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,21 +25,21 @@ class QuestionRepositoryTest {
     @Autowired
     private UsersRepository usersRepository;
 
-    private Users testUser;
+    private Member testUser;
 
     @BeforeEach
     void setUp() {
-        testUser = usersRepository.save(Users.builder().username("question_user").email("q_user@test.com").role(UserRole.ROLE_CUSTOMER).build());
+        testUser = usersRepository.save(Member.builder().username("question_user").email("q_user@test.com").role(MemberRole.ROLE_CUSTOMER).build());
 
         questionRepository.save(Question.builder()
-                .users(testUser)
+                .member(testUser)
                 .title("첫 번째 질문")
                 .content("내용1")
                 .status(QuestionStatus.PENDING)
                 .build());
 
         questionRepository.save(Question.builder()
-                .users(testUser)
+                .member(testUser)
                 .title("두 번째 질문")
                 .content("내용2")
                 .status(QuestionStatus.ANSWERED)
@@ -64,7 +64,7 @@ class QuestionRepositoryTest {
     @DisplayName("사용자 ID로 질문 목록 조회")
     void findByUserId() {
         // when
-        List<Question> questions = questionRepository.findByUserId(testUser.getUserId());
+        List<Question> questions = questionRepository.findByMemberId(testUser.getMemberId());
 
         // then
         assertThat(questions).hasSize(2);

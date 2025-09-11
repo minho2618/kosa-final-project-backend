@@ -24,7 +24,7 @@ public class ReviewPhoto {
     @ManyToOne
             (fetch = FetchType.LAZY)
     @JoinColumn
-            (name="reivew_id")
+            (name="review_id")
     private Review review;
 
     @Override
