@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Slf4j
 public class Seller {
     @Id
-    private Long userId;
+    private Long user_id;
 
     private String sellerName;
 
@@ -44,7 +44,8 @@ public class Seller {
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY)
-    private User user;
+    @JoinColumn(name = "user_id")
+    private Users users;
 
     @Override
     public String toString() {
@@ -52,7 +53,6 @@ public class Seller {
                 "createdAt=" + createdAt +
                 ", country='" + country + '\'' +
                 ", postalCode='" + postalCode + '\'' +
-                ", userId=" + userId +
                 ", sellerName='" + sellerName + '\'' +
                 ", sellerIntro='" + sellerIntro + '\'' +
                 ", sellerRegNo='" + sellerRegNo + '\'' +

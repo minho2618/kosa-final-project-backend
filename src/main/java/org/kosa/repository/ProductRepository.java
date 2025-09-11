@@ -23,4 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<Product> findProductByProductId(Long productId);
     
     // 장바구니 기능(BUY-PAY-001)은 프론트에서 처리
+    // -> save(entity) 기본 제공
+
 }

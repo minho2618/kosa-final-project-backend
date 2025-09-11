@@ -35,7 +35,7 @@ public class Review {
             (fetch = FetchType.LAZY)
     @JoinColumn
             (name="user_id")
-    private User user;
+    private Users users;
 
     @Override
     public String toString() {
@@ -46,7 +46,7 @@ public class Review {
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", products=" + product +
-                ", user=" + user +
+                ", user=" + users +
                 '}';
     }
 }

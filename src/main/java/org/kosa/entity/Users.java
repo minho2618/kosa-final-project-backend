@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Builder
-public class User {
+public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +32,11 @@ public class User {
 
     private UserRole role;
 
+    @Column(length = 255)
+    private String address;
+
+    @Column(length = 20)
+    private String name;
     @CreationTimestamp
     private LocalDateTime createdAt;
 

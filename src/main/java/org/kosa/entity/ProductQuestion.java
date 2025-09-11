@@ -6,10 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.kosa.enums.ProductQuestionsStatus;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,8 +24,9 @@ public class ProductQuestion {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long questionId;
 
-    @Column(length = 50)
-    private String category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
 
     @Lob
     private String content;
@@ -38,13 +42,18 @@ public class ProductQuestion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Users users;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
+    @Cascade(CascadeType.REMOVE)
+    private List<ProductQuestionPhoto> productQuestionPhotoList;
 
     @Override
     public String toString() {
         return "ProductQuestion{" +
                 "questionId=" + questionId +
-                ", category='" + category + '\'' +
+                ", product='" + product + '\'' +
                 ", content='" + content + '\'' +
                 ", status=" + status +
                 ", createdAt=" + createdAt +
