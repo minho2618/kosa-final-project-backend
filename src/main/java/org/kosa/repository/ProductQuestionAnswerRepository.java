@@ -2,7 +2,7 @@ package org.kosa.repository;
 
 import org.kosa.entity.ProductQuestion;
 import org.kosa.entity.ProductQuestionAnswer;
-import org.kosa.entity.User;
+import org.kosa.entity.Users;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,7 +19,7 @@ public interface ProductQuestionAnswerRepository extends JpaRepository<ProductQu
     // List<ProductQuestionAnswer> findByProductQuestion(ProductQuestion question);
 
     // 답변자별 조회
-    List<ProductQuestionAnswer> findByUsers(User user);
+    List<ProductQuestionAnswer> findByUsers(Users user);
 
     // 질문에 대한 답변 존재 여부
     // boolean existsByProductQuestion(ProductQuestion question);
