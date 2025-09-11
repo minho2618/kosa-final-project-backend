@@ -42,7 +42,7 @@ public class ProductQuestion {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Users users;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")

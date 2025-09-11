@@ -3,8 +3,7 @@ package org.kosa.jwt;
 
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
-import org.kosa.entity.User;
-import org.kosa.enums.UserRole;
+import org.kosa.entity.Users;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -65,12 +64,12 @@ public class JWTUtil {
         return re;
     }
 
-    public String createJwt(User user, String role, Long expiredMs) {
+    public String createJwt(Users users, String role, Long expiredMs) {
         log.info("createJwt  call");
         return Jwts.builder()
-                .claim("userId", user.getUserId())//멤버번호
-                .claim("username", user.getName()) //이름
-                .claim("email", user.getEmail()) //아이디
+                .claim("userId", users.getUserId())//멤버번호
+                .claim("username", users.getName()) //이름
+                .claim("email", users.getEmail()) //아이디
                 .claim("role", role) //Role
                 .issuedAt(new Date(System.currentTimeMillis())) //현재로그인된 시간
                 .expiration(new Date(System.currentTimeMillis() + expiredMs)) //만료시간

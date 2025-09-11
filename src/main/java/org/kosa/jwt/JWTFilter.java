@@ -5,7 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.kosa.entity.User;
+import org.kosa.entity.Users;
 import org.kosa.enums.UserRole;
 import org.kosa.security.CustomUserDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,13 +48,13 @@ public class JWTFilter extends OncePerRequestFilter {
         String email = jwtUtil.getEmail(token);
         String role = jwtUtil.getRole(token);
 
-        User user = new User();
-        user.setUserId(userId);
-        user.setEmail(email);
-        user.setUsername(username);
-        user.setRole(UserRole.valueOf(role));
+        Users users = new Users();
+        users.setUserId(userId);
+        users.setEmail(email);
+        users.setUsername(username);
+        users.setRole(UserRole.valueOf(role));
 
-        CustomUserDetails customUserDetails = new CustomUserDetails(user);
+        CustomUserDetails customUserDetails = new CustomUserDetails(users);
 
         Authentication authToken =
                 new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());

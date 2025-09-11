@@ -3,7 +3,7 @@ package org.kosa.security;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.kosa.entity.User;
+import org.kosa.entity.Users;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,11 +14,11 @@ import java.util.Collection;
 @Slf4j
 public class CustomUserDetails implements UserDetails {
     @Getter
-    public final User user;
+    public final Users users;
 
-    public CustomUserDetails(User user) {
-        this.user = user;
-        log.info("CustomMemberDetails ===> {}", user);
+    public CustomUserDetails(Users users) {
+        this.users = users;
+        log.info("CustomMemberDetails ===> {}", users);
     }
 
     // 인증된 사용자의 Role정보 반환
@@ -26,19 +26,19 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         log.info("getAuthorities ===>");
         Collection<GrantedAuthority> collection = new ArrayList<>();
-        collection.add(()->user.getRole().name());
+        collection.add(()-> users.getRole().name());
         return collection;
     }
 
     @Override
     public String getPassword() {
         log.info("getPassword ===>");
-        return user.getPassword();
+        return users.getPassword();
     }
 
     @Override
     public String getUsername() {
         log.info("getUsername ===>");
-        return user.getUsername();
+        return users.getUsername();
     }
 }

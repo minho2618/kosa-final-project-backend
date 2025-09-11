@@ -12,7 +12,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     // 찾기
     Optional<Question> findByQuestionId(Long id);
-    @Query("SELECT q FROM Question q WHERE q.user.userId = :userId")
+    @Query("SELECT q FROM Question q WHERE q.users.userId = :userId")
     List<Question> findByUserId(Long userId);
     List<Question> findByTitle(String title);
 }
