@@ -1,17 +1,24 @@
-package org.kosa.entity;
+package org.kosa.dto.orderItem;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.kosa.entity.Order;
+import org.kosa.entity.OrderItem;
+import org.kosa.entity.Product;
+import org.kosa.entity.Seller;
+import org.kosa.enums.ProductCategory;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @Builder
-public class OrderItem {
+public class OrderItemRes {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,15 +40,8 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @Override
-    public String toString() {
-        return "OrderItem{" +
-                "orderItemId=" + orderItemId +
-                ", product=" + product +
-                ", quantity=" + quantity +
-                ", unitPrice=" + unitPrice +
-                ", discountValue=" + discountValue +
-                ", totalPrice=" + totalPrice +
-                '}';
+    public OrderItemRes toOrderItemRes(OrderItem orderItem) {
+        return OrderItemRes.builder()
+                .build();
     }
 }

@@ -29,7 +29,7 @@ public class Order {
     private OrderStatus status;
 
     @CreationTimestamp
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
     private String address;
 
