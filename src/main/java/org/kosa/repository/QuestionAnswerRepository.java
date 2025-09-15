@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface QuestionAnswerRepository extends JpaRepository<QuestionAnswer, Long> {
-    @Query("select q from QuestionAnswer q WHERE q.question.questionId = :questionId")
+    @Query("select qa from QuestionAnswer qa JOIN FETCH qa.question WHERE qa.question.questionId = :questionId")
     List<QuestionAnswer> findByQuestionId(Long questionId);
 }
