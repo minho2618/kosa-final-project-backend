@@ -1,17 +1,9 @@
 package org.kosa.dto.orderItem;
 
-import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.kosa.entity.Order;
 import org.kosa.entity.OrderItem;
-import org.kosa.entity.Product;
-import org.kosa.entity.Seller;
-import org.kosa.enums.ProductCategory;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,29 +11,23 @@ import java.time.LocalDateTime;
 @Getter
 @Builder
 public class OrderItemRes {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderItemId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
-
+    private Long productId;
     private int quantity;
-
     private BigDecimal unitPrice;
-
     private BigDecimal discountValue;
-
     private BigDecimal totalPrice;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+    private Long orderId;
 
     public OrderItemRes toOrderItemRes(OrderItem orderItem) {
         return OrderItemRes.builder()
+                .orderItemId(orderItem.getOrderItemId())
+                .productId(orderItem.getProduct().getProductId())
+                .quantity(orderItem.getQuantity())
+                .unitPrice(orderItem.getUnitPrice())
+                .discountValue(orderItem.getDiscountValue())
+                .totalPrice(orderItem.getTotalPrice())
+                .orderId(orderItem.getOrder().getOrderId())
                 .build();
     }
 }

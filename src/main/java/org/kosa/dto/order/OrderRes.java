@@ -2,6 +2,7 @@ package org.kosa.dto.order;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.kosa.dto.member.MemberRes;
 import org.kosa.dto.orderItem.OrderItemRes;
 import org.kosa.entity.Order;
 import org.kosa.entity.OrderItem;
@@ -10,6 +11,7 @@ import org.kosa.enums.OrderStatus;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,11 +29,13 @@ public class OrderRes {
     public OrderRes toOrderRes(Order order) {
         return OrderRes.builder()
                 .orderId(order.getOrderId())
-                .memberRes(MemberRes.builder().build()) // ToDo: MemberRes 추가되면 수정할 것
+                .memberRes(MemberRes.builder().build().toMemberRes(order.getMember()))
                 .status(order.getStatus())
                 .createdAt(order.getCreatedAt())
                 .address(order.getAddress())
-                .orderItemList() // ToDo: OrderItemRes 추가되면 수정할 것
+                .orderItemList(order.getOrderItemList()
+                        .stream().map((o) -> new OrderItemRes().toOrderItemRes(o))
+                        .collect(Collectors.toList()))
                 .build();
     }
 }
