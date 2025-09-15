@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
-class ReviewPhotoRepositoryTest {
+class ReviewPhotoResRepositoryTest {
 
     @Autowired
     private ReviewPhotoRepository reviewPhotoRepository;
