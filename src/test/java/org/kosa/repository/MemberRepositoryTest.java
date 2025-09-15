@@ -20,11 +20,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 class MemberRepositoryTest {
 
     @Autowired
-    private UsersRepository usersRepository;
+    private MemberRepository memberRepository;
 
     @BeforeEach
     void setUp() {
-        usersRepository.deleteAll();
+        memberRepository.deleteAll();
 
         Member seller = Member.builder()
                 .username("user1")
@@ -32,7 +32,7 @@ class MemberRepositoryTest {
                 .role(MemberRole.ROLE_SELLER)
                 .name("판매자")
                 .build();
-        usersRepository.save(seller);
+        memberRepository.save(seller);
 
         Member customer = Member.builder()
                 .username("user1")
@@ -40,7 +40,7 @@ class MemberRepositoryTest {
                 .role(MemberRole.ROLE_CUSTOMER)
                 .name("일반사용자")
                 .build();
-        usersRepository.save(customer);
+        memberRepository.save(customer);
 
         Member admin = Member.builder()
                 .username("admin1")
@@ -48,18 +48,18 @@ class MemberRepositoryTest {
                 .role(MemberRole.ROLE_ADMIN)
                 .name("관리자")
                 .build();
-        usersRepository.save(admin);
+        memberRepository.save(admin);
     }
 
     @Test
     @DisplayName("사용자 ID로 조회")
     void findByUserId() {
         // given
-        Member userToFind = usersRepository.findByEmail("user1@example.com");
+        Member userToFind = memberRepository.findByEmail("user1@example.com");
         log.info(userToFind.toString());
 
         // when
-        Member foundUser = usersRepository.findByMemberId(userToFind.getMemberId()).orElse(null);
+        Member foundUser = memberRepository.findByMemberId(userToFind.getMemberId()).orElse(null);
         log.info(foundUser.toString());
 
         // then
@@ -71,9 +71,9 @@ class MemberRepositoryTest {
     @DisplayName("역할(Role)로 사용자 목록 조회")
     void findByRole() {
         // when
-        List<Member> customer = usersRepository.findByRole(MemberRole.ROLE_CUSTOMER);
-        List<Member> seller = usersRepository.findByRole(MemberRole.ROLE_SELLER);
-        List<Member> admins = usersRepository.findByRole(MemberRole.ROLE_ADMIN);
+        List<Member> customer = memberRepository.findByRole(MemberRole.ROLE_CUSTOMER);
+        List<Member> seller = memberRepository.findByRole(MemberRole.ROLE_SELLER);
+        List<Member> admins = memberRepository.findByRole(MemberRole.ROLE_ADMIN);
 
         // then
         assertThat(customer).hasSize(1);
@@ -88,7 +88,7 @@ class MemberRepositoryTest {
     @DisplayName("이메일로 사용자 조회")
     void findByEmail() {
         // when
-        Member foundUser = usersRepository.findByEmail("admin1@example.com");
+        Member foundUser = memberRepository.findByEmail("admin1@example.com");
 
         // then
         assertThat(foundUser).isNotNull();
@@ -108,8 +108,8 @@ class MemberRepositoryTest {
                 .build();
 
         // when
-        Member savedUser = usersRepository.save(newUser);
-        Member foundUser = usersRepository.findById(savedUser.getMemberId()).orElse(null);
+        Member savedUser = memberRepository.save(newUser);
+        Member foundUser = memberRepository.findById(savedUser.getMemberId()).orElse(null);
         // log.info(foundUser.toString());
 
         // then

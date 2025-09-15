@@ -23,13 +23,13 @@ class QuestionRepositoryTest {
     private QuestionRepository questionRepository;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private MemberRepository memberRepository;
 
     private Member testUser;
 
     @BeforeEach
     void setUp() {
-        testUser = usersRepository.save(Member.builder().username("question_user").email("q_user@test.com").role(MemberRole.ROLE_CUSTOMER).build());
+        testUser = memberRepository.save(Member.builder().username("question_user").email("q_user@test.com").role(MemberRole.ROLE_CUSTOMER).build());
 
         questionRepository.save(Question.builder()
                 .member(testUser)

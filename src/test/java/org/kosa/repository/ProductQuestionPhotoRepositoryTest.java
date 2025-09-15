@@ -24,15 +24,15 @@ class ProductQuestionPhotoRepositoryTest {
     @Autowired private ProductQuestionRepository questionRepository;
     @Autowired private ProductRepository productRepository;
     @Autowired private SellerRepository sellerRepository;
-    @Autowired private UsersRepository usersRepository;
+    @Autowired private MemberRepository memberRepository;
 
     private ProductQuestion testQuestion;
 
     @BeforeEach
     void setUp() {
-        Member user = usersRepository.save(Member.builder().username("photo_user").role(MemberRole.ROLE_CUSTOMER).build());
-        Member sellerUser = usersRepository.save(Member.builder().username("photo_seller").role(MemberRole.ROLE_SELLER).build());
-        Seller seller = sellerRepository.save(Seller.builder().member(sellerUser).memberId(sellerUser.getMemberId()).sellerName("사진 농장").role(SellerRole.authenticated).build());
+        Member user = memberRepository.save(Member.builder().username("photo_user").role(MemberRole.ROLE_CUSTOMER).build());
+        Member sellerUser = memberRepository.save(Member.builder().username("photo_seller").role(MemberRole.ROLE_SELLER).build());
+        Seller seller = sellerRepository.save(Seller.builder().member(sellerUser).sellerName("사진 농장").role(SellerRole.authenticated).build());
         Product product = productRepository.save(Product.builder().name("사진 상품").seller(seller).category(ProductCategory.기타).isActive(true).price(BigDecimal.TEN).build());
         testQuestion = questionRepository.save(ProductQuestion.builder().product(product).member(user).content("사진 질문").status(ProductQuestionsStatus.OPEN).build());
 

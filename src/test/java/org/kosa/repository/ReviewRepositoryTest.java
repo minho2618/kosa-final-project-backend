@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.kosa.entity.Product;
 import org.kosa.entity.Review;
 import org.kosa.entity.Seller;
-import org.kosa.entity.Users;
+import org.kosa.entity.Member;
 import org.kosa.enums.ProductCategory;
 import org.kosa.enums.SellerRole;
-import org.kosa.enums.UserRole;
+import org.kosa.enums.MemberRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +27,7 @@ class ReviewRepositoryTest {
     private ReviewRepository reviewRepository;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
     private SellerRepository sellerRepository;
@@ -35,32 +35,31 @@ class ReviewRepositoryTest {
     @Autowired
     private ProductRepository productRepository;
 
-    private Users testUser;
+    private Member testMember;
     private Product testProduct;
 
     @BeforeEach
     void setUp() {
         // given user
-        Users user = new Users();
-        user.setUsername("reviewer");
-        user.setEmail("reviewer@example.com");
-        user.setPassword("password");
-        user.setName("리뷰어");
-        user.setRole(UserRole.ROLE_CUSTOMER);
-        testUser = usersRepository.save(user);
+        Member member = new Member();
+        member.setUsername("reviewer");
+        member.setEmail("reviewer@example.com");
+        member.setPassword("password");
+        member.setName("리뷰어");
+        member.setRole(MemberRole.ROLE_CUSTOMER);
+        testMember = memberRepository.save(member);
 
         // given seller
-        Users sellerUser = new Users();
+        Member sellerUser = new Member();
         sellerUser.setUsername("review_seller");
         sellerUser.setEmail("review_seller@example.com");
         sellerUser.setPassword("password");
         sellerUser.setName("판매자");
-        sellerUser.setRole(UserRole.ROLE_SELLER);
-        Users savedSellerUser = usersRepository.save(sellerUser);
+        sellerUser.setRole(MemberRole.ROLE_SELLER);
+        Member savedSellerMember = memberRepository.save(sellerUser);
 
         Seller seller = new Seller();
-        seller.setUsers(savedSellerUser);
-        seller.setUserId(savedSellerUser.getUserId());
+        seller.setMember(savedSellerMember);
         seller.setSellerName("리뷰 농장");
         seller.setSellerRegNo("111-22-33333");
         seller.setRole(SellerRole.authenticated);
@@ -81,7 +80,7 @@ class ReviewRepositoryTest {
     void saveAndFindReview() {
         // given
         Review newReview = new Review();
-        newReview.setUsers(testUser);
+        newReview.setMember(testMember);
         newReview.setProduct(testProduct);
         newReview.setRating(5L);
         newReview.setContent("정말 맛있어요!");
@@ -95,7 +94,7 @@ class ReviewRepositoryTest {
         assertThat(foundReview).isNotNull();
         assertThat(foundReview.getRating()).isEqualTo(5L);
         assertThat(foundReview.getContent()).isEqualTo("정말 맛있어요!");
-        assertThat(foundReview.getUsers().getUsername()).isEqualTo("reviewer");
+        assertThat(foundReview.getMember().getUsername()).isEqualTo("reviewer");
         assertThat(foundReview.getProduct().getName()).isEqualTo("맛있는 사과");
         System.out.println("Found Review: " + foundReview);
     }

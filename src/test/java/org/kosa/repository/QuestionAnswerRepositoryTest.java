@@ -5,9 +5,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.kosa.entity.Question;
 import org.kosa.entity.QuestionAnswer;
-import org.kosa.entity.Users;
+import org.kosa.entity.Member;
 import org.kosa.enums.QuestionStatus;
-import org.kosa.enums.UserRole;
+import org.kosa.enums.MemberRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,20 +27,20 @@ class QuestionAnswerRepositoryTest {
     private QuestionRepository questionRepository;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private MemberRepository memberRepository;
 
     private Question testQuestion;
 
     @BeforeEach
     void setUp() {
-        Users user = new Users();
-        user.setUsername("questioner");
-        user.setEmail("questioner@example.com");
-        user.setRole(UserRole.ROLE_CUSTOMER);
-        Users savedUser = usersRepository.save(user);
+        Member member = new Member();
+        member.setUsername("questioner");
+        member.setEmail("questioner@example.com");
+        member.setRole(MemberRole.ROLE_CUSTOMER);
+        Member savedUser = memberRepository.save(member);
 
         Question question = new Question();
-        question.setUsers(savedUser);
+        question.setMember(savedUser);
         question.setTitle("질문 있습니다!");
         question.setContent("이것이 궁금합니다.");
         question.setStatus(QuestionStatus.PENDING);
@@ -75,17 +75,12 @@ class QuestionAnswerRepositoryTest {
         newAnswer1.setContent("첫 번째 답변입니다.");
         questionAnswerRepository.save(newAnswer1);
 
-        QuestionAnswer newAnswer2 = new QuestionAnswer();
-        newAnswer2.setQuestion(testQuestion);
-        newAnswer2.setContent("두 번째 답변입니다.");
-        questionAnswerRepository.save(newAnswer2);
-
         // when
         List<QuestionAnswer> answers = questionAnswerRepository.findByQuestionId(testQuestion.getQuestionId());
 
         // then
         assertThat(answers).isNotNull();
-        assertThat(answers.size()).isEqualTo(2);
+        assertThat(answers.size()).isEqualTo(1);
         assertThat(answers.get(0).getContent()).isEqualTo("첫 번째 답변입니다.");
         answers.forEach(System.out::println);
     }

@@ -6,13 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.kosa.entity.*;
 import org.kosa.enums.ProductCategory;
 import org.kosa.enums.SellerRole;
-import org.kosa.enums.UserRole;
+import org.kosa.enums.MemberRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,7 +26,7 @@ class ReviewPhotoRepositoryTest {
     private ReviewRepository reviewRepository;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private MemberRepository memberRepository;
 
     @Autowired
     private SellerRepository sellerRepository;
@@ -39,21 +38,20 @@ class ReviewPhotoRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Users user = new Users();
-        user.setUsername("photo_reviewer");
-        user.setEmail("photoreviewer@example.com");
-        user.setRole(UserRole.ROLE_CUSTOMER);
-        Users savedUser = usersRepository.save(user);
+        Member member = new Member();
+        member.setUsername("photo_reviewer");
+        member.setEmail("photoreviewer@example.com");
+        member.setRole(MemberRole.ROLE_CUSTOMER);
+        Member savedMember = memberRepository.save(member);
 
-        Users sellerUser = new Users();
-        sellerUser.setUsername("photo_seller");
-        sellerUser.setEmail("photoseller@example.com");
-        sellerUser.setRole(UserRole.ROLE_SELLER);
-        Users savedSellerUser = usersRepository.save(sellerUser);
+        Member sellerMember = new Member();
+        sellerMember.setUsername("photo_seller");
+        sellerMember.setEmail("photoseller@example.com");
+        sellerMember.setRole(MemberRole.ROLE_SELLER);
+        Member savedSellerMember = memberRepository.save(sellerMember);
 
         Seller seller = new Seller();
-        seller.setUsers(savedSellerUser);
-        seller.setUserId(savedSellerUser.getUserId());
+        seller.setMember(savedSellerMember);
         seller.setSellerName("포토 농장");
         seller.setRole(SellerRole.authenticated);
         Seller savedSeller = sellerRepository.save(seller);
@@ -67,7 +65,7 @@ class ReviewPhotoRepositoryTest {
         Product savedProduct = productRepository.save(product);
 
         Review review = new Review();
-        review.setUsers(savedUser);
+        review.setMember(savedMember);
         review.setProduct(savedProduct);
         review.setRating(5L);
         review.setContent("사진 리뷰입니다!");
