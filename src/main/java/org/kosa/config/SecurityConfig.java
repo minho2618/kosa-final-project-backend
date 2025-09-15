@@ -44,6 +44,8 @@ public class SecurityConfig {
         http.httpBasic(auth->auth.disable());
         http.authorizeHttpRequests(auth->auth
                 .requestMatchers("/admin").hasRole("ADMIN")
+                .requestMatchers("/swagger-ui/**").permitAll()
+                .requestMatchers("/api-docs/**").permitAll()
                 .anyRequest().authenticated());
 
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
