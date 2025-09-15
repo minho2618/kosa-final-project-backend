@@ -16,6 +16,6 @@ public class RecordNotFoundException extends RuntimeException {
     }
 
     public RecordNotFoundException(String message, String title) {
-        this(message,title,HttpStatus.EXPECTATION_FAILED);
+        this(message,title,HttpStatus.NOT_FOUND);
     }
 }
