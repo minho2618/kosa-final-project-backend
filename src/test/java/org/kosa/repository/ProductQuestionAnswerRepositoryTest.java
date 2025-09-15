@@ -7,7 +7,7 @@ import org.kosa.entity.*;
 import org.kosa.enums.ProductCategory;
 import org.kosa.enums.ProductQuestionsStatus;
 import org.kosa.enums.SellerRole;
-import org.kosa.enums.UserRole;
+import org.kosa.enums.MemberRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,39 +26,38 @@ class ProductQuestionAnswerRepositoryTest {
     @Autowired private ProductQuestionRepository questionRepository;
     @Autowired private ProductRepository productRepository;
     @Autowired private SellerRepository sellerRepository;
-    @Autowired private UsersRepository usersRepository;
+    @Autowired private MemberRepository memberRepository;
 
-    private Users testUser1;
-    private Users testUser2;
+    private Member testMember1;
+    private Member testMember2;
     private ProductQuestion testQuestion1;
 
     @BeforeEach
     void setUp() {
-        testUser1 = usersRepository.save(Users.builder().username("ans_user1").role(UserRole.ROLE_CUSTOMER).build());
-        testUser2 = usersRepository.save(Users.builder().username("ans_user2").role(UserRole.ROLE_CUSTOMER).build());
-        Users sellerUser = usersRepository.save(Users.builder().username("ans_seller").role(UserRole.ROLE_SELLER).build());
-        Seller seller = sellerRepository.save(Seller.builder().users(sellerUser).userId(sellerUser.getUserId()).sellerName("답변 농장").role(SellerRole.authenticated).build());
+        testMember1 = memberRepository.save(Member.builder().username("ans_user1").role(MemberRole.ROLE_CUSTOMER).build());
+        testMember2 = memberRepository.save(Member.builder().username("ans_user2").role(MemberRole.ROLE_CUSTOMER).build());
+        Member sellerMember = memberRepository.save(Member.builder().username("ans_seller").role(MemberRole.ROLE_SELLER).build());
+        Seller seller = sellerRepository.save(Seller.builder().member(sellerMember).sellerName("답변 농장").role(SellerRole.authenticated).build());
         Product product = productRepository.save(Product.builder().name("답변 상품").seller(seller).category(ProductCategory.기타).isActive(true).price(BigDecimal.TEN).build());
 
-        testQuestion1 = questionRepository.save(ProductQuestion.builder().product(product).users(testUser1).content("답변 받을 질문").status(ProductQuestionsStatus.OPEN).build());
-        ProductQuestion testQuestion2 = questionRepository.save(ProductQuestion.builder().product(product).users(testUser2).content("다른 질문").status(ProductQuestionsStatus.OPEN).build());
+        testQuestion1 = questionRepository.save(ProductQuestion.builder().product(product).member(testMember1).content("답변 받을 질문").status(ProductQuestionsStatus.OPEN).build());
+        ProductQuestion testQuestion2 = questionRepository.save(ProductQuestion.builder().product(product).member(testMember2).content("다른 질문").status(ProductQuestionsStatus.OPEN).build());
 
-        answerRepository.save(ProductQuestionAnswer.builder().productQuestionId(testQuestion1.getQuestionId()).users(sellerUser).content("첫번째 답변").build());
-        answerRepository.save(ProductQuestionAnswer.builder().productQuestionId(testQuestion2.getQuestionId()).users(sellerUser).content("두번째 답변").createdAt(LocalDateTime.now().minusDays(2)).build());
+        answerRepository.save(ProductQuestionAnswer.builder().productQuestionId(testQuestion1.getQuestionId()).member(sellerMember).content("첫번째 답변").build());
     }
 
     @Test
     @DisplayName("답변자로 답변 목록 조회")
     void findByUsers() {
         // when
-        List<ProductQuestionAnswer> answers = answerRepository.findByUsers(testUser1);
+        List<ProductQuestionAnswer> answers = answerRepository.findByMember(testMember1);
         // then
         assertThat(answers).isEmpty();
 
         // when
-        List<ProductQuestionAnswer> sellerAnswers = answerRepository.findByUsers(sellerRepository.findAll().get(0).getUsers());
+        List<ProductQuestionAnswer> sellerAnswers = answerRepository.findByMember(sellerRepository.findAll().get(0).getMember());
         // then
-        assertThat(sellerAnswers).hasSize(2);
+        assertThat(sellerAnswers).hasSize(1);
     }
 
     @Test

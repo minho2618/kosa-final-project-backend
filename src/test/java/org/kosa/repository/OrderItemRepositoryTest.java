@@ -24,7 +24,7 @@ class OrderItemRepositoryTest {
     @Autowired private OrderItemRepository orderItemRepository;
     @Autowired private OrderRepository orderRepository;
     @Autowired private ProductRepository productRepository;
-    @Autowired private UsersRepository usersRepository;
+    @Autowired private MemberRepository memberRepository;
     @Autowired private SellerRepository sellerRepository;
 
     private Order testOrder;
@@ -33,9 +33,9 @@ class OrderItemRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Member user = usersRepository.save(Member.builder().username("order_user").role(MemberRole.ROLE_CUSTOMER).build());
-        Member sellerUser = usersRepository.save(Member.builder().username("order_seller").role(MemberRole.ROLE_SELLER).build());
-        Seller seller = sellerRepository.save(Seller.builder().member(sellerUser).memberId(sellerUser.getMemberId()).sellerName("주문 농장").role(SellerRole.authenticated).build());
+        Member user = memberRepository.save(Member.builder().username("order_user").role(MemberRole.ROLE_CUSTOMER).build());
+        Member sellerUser = memberRepository.save(Member.builder().username("order_seller").role(MemberRole.ROLE_SELLER).build());
+        Seller seller = sellerRepository.save(Seller.builder().member(sellerUser).sellerName("주문 농장").role(SellerRole.authenticated).build());
 
         testProduct1 = productRepository.save(Product.builder().name("주문 상품 1").price(new BigDecimal("100")).seller(seller).category(ProductCategory.기타).isActive(true).build());
         testProduct2 = productRepository.save(Product.builder().name("주문 상품 2").price(new BigDecimal("200")).seller(seller).category(ProductCategory.기타).isActive(true).build());

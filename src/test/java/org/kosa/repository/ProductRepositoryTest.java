@@ -5,10 +5,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.kosa.entity.Product;
 import org.kosa.entity.Seller;
-import org.kosa.entity.Users;
+import org.kosa.entity.Member;
 import org.kosa.enums.ProductCategory;
 import org.kosa.enums.SellerRole;
-import org.kosa.enums.UserRole;
+import org.kosa.enums.MemberRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,21 +29,20 @@ class ProductRepositoryTest {
     private SellerRepository sellerRepository;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private MemberRepository memberRepository;
 
     private Seller testSeller;
 
     @BeforeEach
     void setUp() {
-        Users sellerUser = new Users();
-        sellerUser.setUsername("product_seller");
-        sellerUser.setEmail("product_seller@example.com");
-        sellerUser.setRole(UserRole.ROLE_SELLER);
-        Users savedSellerUser = usersRepository.save(sellerUser);
+        Member sellerMember = new Member();
+        sellerMember.setUsername("product_seller");
+        sellerMember.setEmail("product_seller@example.com");
+        sellerMember.setRole(MemberRole.ROLE_SELLER);
+        Member savedSellerUser = memberRepository.save(sellerMember);
 
         Seller seller = new Seller();
-        seller.setUsers(savedSellerUser);
-        seller.setUserId(savedSellerUser.getUserId());
+        seller.setMember(savedSellerUser);
         seller.setSellerName("상품 농장");
         seller.setRole(SellerRole.authenticated);
         testSeller = sellerRepository.save(seller);
