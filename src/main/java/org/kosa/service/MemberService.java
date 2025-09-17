@@ -23,6 +23,8 @@ public class MemberService {
 
     @Transactional
     public MemberRes signUp(SignUpReq signUpReq) throws DuplicateException, InvalidInputException {
+        if(memberRepository.existsByEmail(signUpReq.getEmail()))
+            throw new DuplicateException("중복된 아이디", "Duplicate Email");
         Member rMember = SignUpReq.toMember(signUpReq);
         String pwdEnc = bCryptPasswordEncoder.encode(signUpReq.getPassword());
         rMember.setPassword(pwdEnc);
@@ -41,15 +43,32 @@ public class MemberService {
         return MemberRes.toMemberRes(uMember);
     }
 
+    @Transactional
+    public void deleteMember(Long id){
+        memberRepository.softDeleteById(id);
+    }
+
     public Page<MemberRes> findAllMember(Pageable pageable) {
-        Page<Member> list = memberRepository.findAll(pageable);
+        Page<Member> list = memberRepository.findAllMember(pageable);
         return list.map(MemberRes::toMemberRes);
     }
 
-    public MemberRes findByMemberId(Long id) throws RecordNotFoundException{
+    public MemberRes findByEmail(String email){
+        Member fMember = memberRepository.findByEmail(email);
+        if (fMember == null)
+            throw  new RecordNotFoundException("해당 Email의 회원을 찾을 수 없습니다.", "Not Found Email");
+        return MemberRes.toMemberRes(fMember);
+    }
+    public MemberRes findByMemberId(Long id) {
         Member fMember = memberRepository.findByMemberId(id).orElseThrow(()->
                 new RecordNotFoundException("해당 ID의 회원을 찾을 수 없습니다.", "Not Found Member Id")
         );
         return MemberRes.toMemberRes(fMember);
+    }
+
+    public String duplicateCheck(String email) {
+        Member rMember = memberRepository.duplicateCheck(email);
+        if (rMember == null || rMember.equals("")) return "아이디 사용 가능";
+        else return "아이디 사용 불가";
     }
 }
