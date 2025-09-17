@@ -14,8 +14,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
+    @Query(value = "select m from Member m where m.email= :email")
+    Member duplicateCheck(String email);
+
+    //Query Method... findBy로 시작... CamelCase
+    Boolean existsByEmail(String email);
+
+
     @Query("SELECT m FROM Member m WHERE m.deletedAt IS NULL")
-    Page<Member> findAll(Pageable pageable);
+    Page<Member> findAllMember(Pageable pageable);
 
     @Query("SELECT m FROM Member m WHERE m.memberId = :id AND m.deletedAt IS NULL")
     Optional<Member> findByMemberId(@Param("id") Long id);
@@ -26,11 +33,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("SELECT m FROM Member m WHERE m.email = :email AND m.deletedAt IS NULL")
     Member findByEmail(@Param("email") String email);
 
-/*    @Override
-    @Transactional
     @Modifying
-    @Query("UPDATE Member m SET m.deletedAt = CURRENT_TIMESTAMP, m.role = 'ROLE_DELETE' WHERE m.memberId = :id")
-    void deleteById(@Param("id") Long id);*/
+    @Transactional
+    @Query("UPDATE Member m SET m.deletedAt = CURRENT_TIMESTAMP, m.role = org.kosa.enums.MemberRole.ROLE_DELETE, m.email = CONCAT(m.email, '_', FUNCTION('UUID')) WHERE m.memberId = :id")
+    void softDeleteById(@Param("id") Long id);
 
     @Query("SELECT m FROM Member m WHERE m.deletedAt IS NOT NULL")
     Page<Member> findAllDeletedMember(Pageable pageable);

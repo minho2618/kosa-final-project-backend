@@ -43,4 +43,15 @@ public class DefaultExceptionAdvice {
         problemDetail.setProperty("timestamp", LocalDateTime.now());
         return problemDetail;
     }
+
+    @ExceptionHandler(Exception.class)
+    public ProblemDetail exceptionHandle(Exception e) {
+        ProblemDetail problemDetail = ProblemDetail.forStatus(600);//상태코드중 하나 넣어도 상관없음.
+        problemDetail.setTitle("DB Error...");
+        problemDetail.setDetail("작업중 문제가 발생하였습니다.");
+
+        //추가적으로 정보를 설정할 부분은 아랫코드로 작성..
+        problemDetail.setProperty("timestamp", LocalDateTime.now());
+        return problemDetail;
+    }
 }
