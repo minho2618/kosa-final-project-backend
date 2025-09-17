@@ -22,7 +22,7 @@ public class QuestionRes {
     private Long memberId;
     private String authorName;
 
-    public QuestionRes toQuestionRes(Question question) {
+    public static QuestionRes toQuestionRes(Question question) {
         return QuestionRes.builder()
                 .questionId(question.getQuestionId())
                 .title(question.getTitle())

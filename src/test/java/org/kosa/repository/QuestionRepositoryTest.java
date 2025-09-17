@@ -9,6 +9,8 @@ import org.kosa.enums.QuestionStatus;
 import org.kosa.enums.MemberRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -29,7 +31,7 @@ class QuestionRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        testUser = memberRepository.save(Member.builder().username("question_user").email("q_user@test.com").role(MemberRole.ROLE_CUSTOMER).build());
+        testUser = memberRepository.save(Member.builder().email("q_user@test.com").role(MemberRole.ROLE_CUSTOMER).build());
 
         questionRepository.save(Question.builder()
                 .member(testUser)
@@ -50,7 +52,7 @@ class QuestionRepositoryTest {
     @DisplayName("질문 ID로 조회")
     void findByQuestionId() {
         // given
-        Question question = questionRepository.findByTitle("첫 번째 질문").get(0);
+        Question question = questionRepository.findByTitle("첫 번째 질문", Pageable.unpaged()).stream().findFirst().get()
 
         // when
         Question foundQuestion = questionRepository.findByQuestionId(question.getQuestionId()).orElseThrow();
@@ -64,7 +66,7 @@ class QuestionRepositoryTest {
     @DisplayName("사용자 ID로 질문 목록 조회")
     void findByUserId() {
         // when
-        List<Question> questions = questionRepository.findByMemberId(testUser.getMemberId());
+        Page<Question> questions = questionRepository.findByMemberId(testUser.getMemberId(), Pageable.unpaged());
 
         // then
         assertThat(questions).hasSize(2);
@@ -74,7 +76,7 @@ class QuestionRepositoryTest {
     @DisplayName("제목으로 질문 조회")
     void findByTitle() {
         // when
-        List<Question> questions = questionRepository.findByTitle("두 번째 질문");
+        Page<Question> questions = questionRepository.findByTitle("두 번째 질문", Pageable.unpaged());
 
         // then
         assertThat(questions).hasSize(1);

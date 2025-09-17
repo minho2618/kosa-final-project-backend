@@ -14,10 +14,10 @@ public class QuestionReq {
     private String title;
     private String content;
 
-    public Question toQuestion(){
+    public static Question toQuestion(QuestionReq req){
         return Question.builder()
-                .title(title)
-                .content(content)
+                .title(req.getTitle())
+                .content(req.getContent())
                 .build();
     }
 }
