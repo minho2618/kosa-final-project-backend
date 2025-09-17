@@ -3,8 +3,12 @@ package org.kosa.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.kosa.dto.reviewPhoto.ReviewPhotoRes;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -36,6 +40,15 @@ public class Review {
     @JoinColumn
             (name="member_id")
     private Member member;
+
+    @OneToMany
+            (fetch = FetchType.LAZY)
+    @JoinColumn
+            (name="review_id")
+    @Cascade(CascadeType.REMOVE)
+    private List<ReviewPhotoRes> photos;
+
+
 
     @Override
     public String toString() {

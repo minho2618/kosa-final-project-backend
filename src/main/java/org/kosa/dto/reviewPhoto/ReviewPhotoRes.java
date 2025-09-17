@@ -17,7 +17,7 @@ public class ReviewPhotoRes {
     private LocalDateTime createdAt;
 
     // Entity -> DTO 변환을 위한 정적 팩토리 메소드
-    public static ReviewPhotoRes from(org.kosa.entity.ReviewPhoto entity) {
+    public static ReviewPhotoRes toReviewPhotoRes(ReviewPhotoRes entity) {
         return ReviewPhotoRes.builder()
                 .photoId(entity.getPhotoId())
                 .url(entity.getUrl())
