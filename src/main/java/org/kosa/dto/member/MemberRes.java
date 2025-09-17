@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Builder
 public class MemberRes {
     private Long memberId;
-    private String username;
     private String email;
     private String phoneNum;
     private String address;
@@ -22,10 +21,9 @@ public class MemberRes {
     private String name;
     private String role;
 
-    public MemberRes toMemberRes(Member member){
+    public static MemberRes toMemberRes(Member member){
         return MemberRes.builder()
                 .memberId(member.getMemberId())
-                .username(member.getUsername())
                 .email(member.getEmail())
                 .phoneNum(member.getPhoneNum())
                 .address(member.getAddress())

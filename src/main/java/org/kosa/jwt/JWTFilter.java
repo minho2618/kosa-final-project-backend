@@ -45,13 +45,12 @@ public class JWTFilter extends OncePerRequestFilter {
 
         Long memberId = jwtUtil.getMemberId(token);
         String username = jwtUtil.getUsername(token);
-        String email = jwtUtil.getEmail(token);
+        String name = jwtUtil.getName(token);
         String role = jwtUtil.getRole(token);
 
         Member member = new Member();
         member.setMemberId(memberId);
-        member.setEmail(email);
-        member.setUsername(username);
+        member.setEmail(username);
         member.setRole(MemberRole.valueOf(role));
 
         CustomMemberDetails customMemberDetails = new CustomMemberDetails(member);

@@ -18,4 +18,5 @@ public class InvalidInputException extends RuntimeException {
     public InvalidInputException(String message, String title) {
         this(message,title,HttpStatus.EXPECTATION_FAILED);
     }
+
 }

@@ -3,9 +3,8 @@ package org.kosa.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.kosa.enums.MemberRole;
-
+import org.kosa.listener.MemberEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,16 +13,13 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @Builder
+@EntityListeners(MemberEntityListener.class)
 public class Member {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(length = 50)
-    private String username;
-
-    @Column(length = 100)
+    @Column(length = 100, unique = true, nullable = false)
     private String email;
 
     private String password;
@@ -47,7 +43,6 @@ public class Member {
     public String toString() {
         return "Member{" +
                 "memberId=" + memberId +
-                ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", phoneNum='" + phoneNum + '\'' +
