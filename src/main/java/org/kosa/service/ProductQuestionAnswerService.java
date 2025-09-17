@@ -1,7 +1,9 @@
 package org.kosa.service;
 
 import lombok.RequiredArgsConstructor;
+import org.kosa.dto.productQuestion.ProductQuestionRes;
 import org.kosa.dto.productQuestionAnswer.ProductQuestionAnswerReq;
+import org.kosa.dto.productQuestionAnswer.ProductQuestionAnswerRes;
 import org.kosa.entity.Member;
 import org.kosa.entity.ProductQuestion;
 import org.kosa.entity.ProductQuestionAnswer;
@@ -38,10 +40,16 @@ public class ProductQuestionAnswerService {
         return productQuestionAnswerRepository.findByProductQuestion(productQuestion);
     }
 
-    public ProductQuestionAnswer findByProductQuestionId(Long productQuestionId) {
-        ProductQuestion productQuestion = productQuestionService.findByIdWithDetails(productQuestionId);
+    public ProductQuestionAnswerRes findByProductQuestionId(Long productQuestionId) {
+        ProductQuestionRes productQuestionRes = productQuestionService.findByIdWithDetails(productQuestionId);
+        ProductQuestion productQuestion = ProductQuestion
+                .builder()
+                .questionId(productQuestionRes.getQuestionId())
+                .build();
 
-        return productQuestionAnswerRepository.findByProductQuestion(productQuestion);
+        ProductQuestionAnswer productQuestionAnswer = productQuestionAnswerRepository.findByProductQuestion(productQuestion);
+
+        return ProductQuestionAnswerRes.toProductQuestionAnswerRes(productQuestionAnswer);
     }
 
     /*@Transactional(readOnly = true)

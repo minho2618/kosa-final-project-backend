@@ -14,14 +14,16 @@ import java.util.List;
 public class ProductQuestionPhotoService {
 
     private final ProductQuestionPhotoRepository productQuestionPhotoRepository;
+    private final ProductQuestionService productQuestionService;
 
     @Transactional
     public void saveProductQuestionPhotos(List<ProductQuestionPhoto> photos) {
         productQuestionPhotoRepository.saveAll(photos);
     }
 
-    public List<ProductQuestionPhoto> findByProductQuestionOrderBySortOrder(ProductQuestion question) {
-        // Assuming you will add `List<ProductQuestionPhoto> findByProductQuestionOrderBySortOrder(ProductQuestion question);` to the repository
+    public List<ProductQuestionPhoto> findByProductQuestionOrderBySortOrder(Long questionId) {
+         productQuestionService.findByProduct(questionId);
+
         return productQuestionPhotoRepository.findAll(); // Placeholder
     }
 

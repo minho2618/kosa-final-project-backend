@@ -1,6 +1,7 @@
 package org.kosa.service;
 
 import lombok.RequiredArgsConstructor;
+import org.kosa.dto.member.MemberRes;
 import org.kosa.dto.order.OrderReq;
 import org.kosa.entity.Member;
 import org.kosa.entity.Order;
@@ -34,7 +35,10 @@ public class OrderService {
     }
 
     public List<Order> findOrdersByMember(Long memberId) {
-        Member member = memberService.findById(memberId);
+        MemberRes memberRes = memberService.findByMemberId(memberId);
+        Member member = Member.builder()
+                .memberId(memberRes.getMemberId())
+                .build();
 
         return orderRepository.findByMember(member)
                 .orElseThrow(() -> new RecordNotFoundException("해당하는 사용자가 존재하지 않습니다.", "NO MEMBER"));

@@ -2,6 +2,8 @@ package org.kosa.service;
 
 import lombok.RequiredArgsConstructor;
 import org.kosa.dto.orderItem.OrderItemReq;
+import org.kosa.dto.orderItem.OrderItemRes;
+import org.kosa.dto.product.ProductRes;
 import org.kosa.entity.Order;
 import org.kosa.entity.OrderItem;
 import org.kosa.entity.Product;
@@ -11,12 +13,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class OrderItemService {
 
     private final OrderItemRepository orderItemRepository;
+    private final OrderService orderService;
+    private final ProductService productService;
 
     @Transactional
     public Long createOrderItem(OrderItemReq orderItemReq) {
@@ -25,13 +30,36 @@ public class OrderItemService {
         return savedOrderItem.getOrderItemId();
     }
 
-    public List<OrderItem> findOrderItemsByOrder(Order order) {
-        return orderItemRepository.findByOrder(order)
+    public List<OrderItemRes> findOrderItemsByOrder(Long orderId) {
+        Order order = orderService.findOrderById(orderId);
+
+        List<OrderItem> orderItemList = orderItemRepository.findByOrder(order)
                 .orElseThrow(() -> new RecordNotFoundException("해당하는 주문이 존재하지 않습니다.", "NO ORDER"));
+
+        return orderItemList.stream()
+                .map(OrderItemRes::toOrderItemRes)
+                .collect(Collectors.toList());
     }
 
-    public List<OrderItem> findOrderItemsByProduct(Product product) {
-        return orderItemRepository.findByProduct(product);
+    public List<OrderItemRes> findOrderItemsByProduct(Long productId) {
+        ProductRes productRes = productService.getProductDetail(productId);
+        Product product = Product.builder()
+                .productId(productRes.getProductId())
+                .name(productRes.getName())
+                .description(productRes.getDescription())
+                .price(productRes.getPrice())
+                .category(productRes.getCategory())
+                .discountValue(productRes.getDiscountValue())
+                .isActive(productRes.getIsActive())
+                .createdAt(productRes.getCreatedAt())
+                .updatedAt(productRes.getUpdatedAt())
+                .build();
+
+        List<OrderItem> orderItemList = orderItemRepository.findByProduct(product);
+
+        return orderItemList.stream()
+                .map(OrderItemRes::toOrderItemRes)
+                .collect(Collectors.toList());
     }
 
     public List<OrderItem> findByQuantityGreaterThan(int quantity) {

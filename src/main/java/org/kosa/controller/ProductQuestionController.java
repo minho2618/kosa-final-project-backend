@@ -1,115 +1,116 @@
 package org.kosa.controller;
 
-package org.kosa.service;
-
 import lombok.RequiredArgsConstructor;
+import org.kosa.dto.product.ProductReq;
 import org.kosa.dto.productQuestion.ProductQuestionReq;
+import org.kosa.dto.productQuestion.ProductQuestionRes;
 import org.kosa.entity.*;
 import org.kosa.enums.ProductQuestionsStatus;
 import org.kosa.exception.RecordNotFoundException;
 import org.kosa.repository.ProductQuestionRepository;
 import org.kosa.service.ProductQuestionAnswerService;
 import org.kosa.service.ProductQuestionPhotoService;
+import org.kosa.service.ProductQuestionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/product-questions")
 @RequiredArgsConstructor
 public class ProductQuestionController {
 
-    private final ProductQuestionRepository productQuestionRepository;
-
+    private final ProductQuestionService productQuestionService;
     private final ProductQuestionPhotoService productQuestionPhotoService;
     private final ProductQuestionAnswerService productQuestionAnswerService;
 
 
-    @Transactional
-    public Long createProductQuestion(ProductQuestionReq productQuestionReq) {
-        // ToDo: 상품 존재하는 지 확인
-        // Product product =
+    @PostMapping("")
+    public ResponseEntity<?> createProductQuestion(ProductQuestionReq productQuestionReq) {
+        Long productQuestionId = productQuestionService.createProductQuestion(productQuestionReq);
 
-        ProductQuestion productQuestion = productQuestionReq.toEntity();
-        ProductQuestion savedProductQuestion = productQuestionRepository.save(productQuestion);
-        return savedProductQuestion.getQuestionId();
+        return ResponseEntity
+                .status(201)
+                .body(productQuestionId);
     }
 
-    @Transactional(readOnly = true)
-    public List<ProductQuestion> findByProduct(Product product) {
-        // ToDo: 상품 존재하는 지 확인
-        // Product product =
+    @GetMapping("/{productId}")
+    public ResponseEntity<?> findByProduct(@PathVariable Long productId) {
+        List<ProductQuestionRes> resList = productQuestionService.findByProduct(productId);
 
-        return productQuestionRepository.findByProduct(product);
+        return ResponseEntity
+                .status(200)
+                .body(resList);
     }
 
-    @Transactional(readOnly = true)
-    public Page<ProductQuestion> findByProduct(Product product, Pageable pageable) {
+    // ToDo: 페이지네이션 적용할 것
+    /*@GetMapping("/")
+    public ResponseEntity<?> findByProduct(Product product, Pageable pageable) {
         return productQuestionRepository.findByProduct(product, pageable);
+    }*/
+
+    @GetMapping("/member/{id}")
+    public ResponseEntity<?> findByMember(@PathVariable Long id) {
+        List<ProductQuestionRes> resList = productQuestionService.findByMember(id);
+
+        return ResponseEntity
+                .status(200)
+                .body(resList);
     }
 
-@Transactional(readOnly = true)
-    public List<ProductQuestion> findByMember(Member member) {
-        return productQuestionRepository.findByMember(member);
-    }
 
-
-    @Transactional(readOnly = true)
-    public List<ProductQuestion> findByStatus(ProductQuestionsStatus status) {
+    /*@Transactional(readOnly = true)
+    public ResponseEntity<?> findByStatus(ProductQuestionsStatus status) {
         return productQuestionRepository.findByStatus(status);
-    }
+    }*/
 
-    @Transactional(readOnly = true)
-    public List<ProductQuestion> findByUpdatedAtAfter(LocalDateTime date) {
+    /*@Transactional(readOnly = true)
+    public ResponseEntity<?> findByUpdatedAtAfter(LocalDateTime date) {
         return productQuestionRepository.findByUpdatedAtAfter(date);
-    }
+    }*/
 
-    @Transactional(readOnly = true)
-    public List<ProductQuestion> findPendingQuestions(Product product, ProductQuestionsStatus status) {
+    /*@Transactional(readOnly = true)
+    public ResponseEntity<?> findPendingQuestions(Product product, ProductQuestionsStatus status) {
         return productQuestionRepository.findPendingQuestions(product, status);
-    }
+    }*/
 
-    @Transactional
-    public int updateStatusByIds(List<Long> ids, ProductQuestionsStatus status) {
+    /*@PutMapping("/status/{id}")
+    public ResponseEntity<?> updateStatusByIds(List<Long> ids, ProductQuestionsStatus status) {
+        productQuestionService.updateStatusByIds()
+
         return productQuestionRepository.updateStatusByIds(ids, status);
+    }*/
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findByIdWithDetails(@PathVariable Long id) {
+        ProductQuestionRes productQuestionRes = productQuestionService.findByIdWithDetails(id);
+
+        return ResponseEntity
+                .status(200)
+                .body(productQuestionRes);
     }
 
-    @Transactional(readOnly = true)
-    public ProductQuestion findByIdWithDetails(Long id) {
-        return productQuestionRepository.findByIdWithDetails(id);
+    @PutMapping("/{questionId}")
+    public ResponseEntity<?> updateProductQuestion(@PathVariable Long questionId, @RequestBody ProductQuestionReq productQuestionReq) {
+        productQuestionService.updateProductQuestion(questionId, productQuestionReq);
+
+        return ResponseEntity
+                .status(201)
+                .body(productQuestionReq);
     }
 
-    @Transactional
-    public void updateProductQuestion(Long questionId, ProductQuestionReq productQuestionReq) {
-        ProductQuestion productQuestion = productQuestionRepository.findById(questionId)
-                .orElseThrow(() -> new RecordNotFoundException("해당하는 상품문의가 존재하지 않습니다.", "NO PRODUCT-QUESTION"));
+    @DeleteMapping("/{questionId}")
+    public ResponseEntity<?> deleteProductQuestion(@PathVariable Long questionId) {
+        productQuestionService.deleteProductQuestion(questionId);
 
-        productQuestion.setContent(productQuestionReq.getContent());
-        productQuestion.setStatus(productQuestionReq.getStatus());
-
-        productQuestionRepository.save(productQuestion);
-    }
-
-    @Transactional
-    public void deleteProductQuestion(Long questionId) {
-        // 1. 답변 제거(있다면)
-        ProductQuestionAnswer answer = productQuestionAnswerService.findByProductQuestionId(questionId);
-        if (answer != null) {
-            productQuestionAnswerService.deleteProductQuestionAnswer(answer.getAnswerId());
-        }
-
-        // 2. 사진 제거(있다면)
-        List<ProductQuestionPhoto> productQuestionPhotoList =
-                productQuestionPhotoService.findByProductQuestionOrderBySortOrder(this.findByIdWithDetails(questionId));
-        productQuestionPhotoList
-                .forEach((p) -> {
-                    productQuestionPhotoService.deleteProductQuestionPhoto(p.getPhotoId());
-                });
-
-        productQuestionRepository.deleteById(questionId);
+        return ResponseEntity
+                .status(200)
+                .body("Delete Complete: " + questionId);
     }
 }

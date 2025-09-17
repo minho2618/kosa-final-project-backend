@@ -1,7 +1,10 @@
 package org.kosa.service;
 
 import lombok.RequiredArgsConstructor;
+import org.kosa.dto.member.MemberRes;
+import org.kosa.dto.product.ProductRes;
 import org.kosa.dto.productQuestion.ProductQuestionReq;
+import org.kosa.dto.productQuestion.ProductQuestionRes;
 import org.kosa.entity.*;
 import org.kosa.enums.ProductQuestionsStatus;
 import org.kosa.exception.RecordNotFoundException;
@@ -13,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,33 +26,53 @@ public class ProductQuestionService {
 
     private final ProductQuestionPhotoService productQuestionPhotoService;
     private final ProductQuestionAnswerService productQuestionAnswerService;
+    private final ProductService productService;
+    private final MemberService memberService;
 
 
     @Transactional
-    public Long createProductQuestion(ProductQuestionReq productQuestionReq) {
-        // ToDo: 상품 존재하는 지 확인
-        // Product product =
+    public Long createProductQuestion(ProductQuestionReq productQuestionReq) throws RecordNotFoundException {
+        ProductRes productRes = productService.getProductDetail(productQuestionReq.getProductId());
+        if (productRes == null) {
+            throw new RecordNotFoundException("해당 상품이 존재하지 않습니다.", "NO PRODUCT");
+        }
 
         ProductQuestion productQuestion = productQuestionReq.toEntity();
         ProductQuestion savedProductQuestion = productQuestionRepository.save(productQuestion);
         return savedProductQuestion.getQuestionId();
     }
 
-    public List<ProductQuestion> findByProduct(Product product) {
-        // ToDo: 상품 존재하는 지 확인
-        // Product product =
+    public List<ProductQuestionRes> findByProduct(Long productId) {
+        ProductRes productRes = productService.getProductDetail(productId);
+        if (productRes == null) {
+            throw new RecordNotFoundException("해당 상품이 존재하지 않습니다.", "NO PRODUCT");
+        }
+        Product product = Product.builder()
+                .productId(productRes.getProductId())
+                .build();
 
-        return productQuestionRepository.findByProduct(product);
+        return productQuestionRepository.findByProduct(product)
+                .stream()
+                .map(ProductQuestionRes::toProductQuestionRes)
+                .collect(Collectors.toList());
     }
 
     public Page<ProductQuestion> findByProduct(Product product, Pageable pageable) {
         return productQuestionRepository.findByProduct(product, pageable);
     }
 
-    /*@Transactional(readOnly = true)
-    public List<ProductQuestion> findByMember(Member member) {
-        return productQuestionRepository.findByMember(member);
-    }*/
+    public List<ProductQuestionRes> findByMember(Long memberId) {
+        MemberRes memberRes = memberService.findByMemberId(memberId);
+        Member member = Member.builder()
+                .memberId(memberRes.getMemberId())
+                .build();
+
+        List<ProductQuestion> pqList = productQuestionRepository.findByMember(member);
+
+        return pqList.stream()
+                .map(ProductQuestionRes::toProductQuestionRes)
+                .collect(Collectors.toList());
+    }
 
     public List<ProductQuestion> findByStatus(ProductQuestionsStatus status) {
         return productQuestionRepository.findByStatus(status);
@@ -62,13 +86,15 @@ public class ProductQuestionService {
         return productQuestionRepository.findPendingQuestions(product, status);
     }
 
-    @Transactional
+    /*@Transactional
     public int updateStatusByIds(List<Long> ids, ProductQuestionsStatus status) {
         return productQuestionRepository.updateStatusByIds(ids, status);
-    }
+    }*/
 
-    public ProductQuestion findByIdWithDetails(Long id) {
-        return productQuestionRepository.findByIdWithDetails(id);
+    public ProductQuestionRes findByIdWithDetails(Long id) {
+        ProductQuestion productQuestion = productQuestionRepository.findByIdWithDetails(id);
+
+        return ProductQuestionRes.toProductQuestionRes(productQuestion);
     }
 
     @Transactional
@@ -92,7 +118,7 @@ public class ProductQuestionService {
         
         // 2. 사진 제거(있다면)
         List<ProductQuestionPhoto> productQuestionPhotoList =
-                productQuestionPhotoService.findByProductQuestionOrderBySortOrder(this.findByIdWithDetails(questionId));
+                productQuestionPhotoService.findByProductQuestionOrderBySortOrder();
         productQuestionPhotoList
                 .forEach((p) -> {
                     productQuestionPhotoService.deleteProductQuestionPhoto(p.getPhotoId());
