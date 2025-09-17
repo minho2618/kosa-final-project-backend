@@ -19,7 +19,7 @@ public class OrderItemRes {
     private BigDecimal totalPrice;
     private Long orderId;
 
-    public OrderItemRes toOrderItemRes(OrderItem orderItem) {
+    public static OrderItemRes toOrderItemRes(OrderItem orderItem) {
         return OrderItemRes.builder()
                 .orderItemId(orderItem.getOrderItemId())
                 .productId(orderItem.getProduct().getProductId())

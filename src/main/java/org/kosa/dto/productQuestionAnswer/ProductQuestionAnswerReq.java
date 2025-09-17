@@ -18,11 +18,20 @@ public class ProductQuestionAnswerReq {
     private Long productQuestionId;
     private Long memberId;
 
-    public ProductQuestionAnswer toProductQuestionAnswer(ProductQuestionAnswerReq req) {
+    public static ProductQuestionAnswer toProductQuestionAnswer(ProductQuestionAnswerReq req) {
         return ProductQuestionAnswer.builder()
                 .content(req.getContent())
                 .productQuestionId(req.getProductQuestionId())
                 .member(Member.builder().memberId(req.getProductQuestionId()).build())
                 .build();
     }
+
+    public ProductQuestionAnswer toEntity() {
+        return ProductQuestionAnswer.builder()
+                .content(this.getContent())
+                .productQuestionId(this.getProductQuestionId())
+                .member(Member.builder().memberId(this.getProductQuestionId()).build())
+                .build();
+    }
+
 }

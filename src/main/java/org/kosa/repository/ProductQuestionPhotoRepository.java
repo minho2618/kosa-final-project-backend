@@ -17,7 +17,7 @@ public interface ProductQuestionPhotoRepository extends JpaRepository<ProductQue
     // List<ProductQuestionPhoto> findByProductQuestionOrderBySortOrder(ProductQuestion question);
 
     // URL로 조회
-    ProductQuestionPhoto findByUrl(String url);
+    // ProductQuestionPhoto findByUrl(String url);
 
     // 질문 ID로 사진 삭제
     // @Modifying

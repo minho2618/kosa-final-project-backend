@@ -20,12 +20,21 @@ public class OrderReq {
     private String address;
     private List<OrderItem> orderItemList = new ArrayList<>();
 
-    public Order toOrder(OrderReq orderReq) {
+    public static Order toOrder(OrderReq orderReq) {
         return Order.builder()
                 .member(Member.builder().memberId(orderReq.getMemberId()).build())
                 .status(orderReq.getStatus())
                 .address(orderReq.getAddress())
                 .orderItemList(orderReq.getOrderItemList())
+                .build();
+    }
+
+    public Order toEntity() {
+        return Order.builder()
+                .member(Member.builder().memberId(this.getMemberId()).build())
+                .status(this.getStatus())
+                .address(this.getAddress())
+                .orderItemList(this.getOrderItemList())
                 .build();
     }
 }

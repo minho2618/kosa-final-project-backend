@@ -20,14 +20,25 @@ public class ProductQuestionReq {
     private Long memberId;
     private List<ProductQuestionPhotoReq> productQuestionPhotoReqList;
 
-    public ProductQuestion toProductQuestion(ProductQuestionReq req) {
+    public static ProductQuestion toProductQuestion(ProductQuestionReq req) {
         return ProductQuestion.builder()
                 .content(req.getContent())
                 .status(req.getStatus())
                 .member(Member.builder().memberId(req.getMemberId()).build())
                 .productQuestionPhotoList(req.getProductQuestionPhotoReqList()
                         .stream()
-                        .map((photo) -> new ProductQuestionPhotoReq().toProductQuestionPhoto(photo)).collect(Collectors.toList()))
+                        .map((photo) -> new ProductQuestionPhotoReq().toEntity()).collect(Collectors.toList()))
+                .build();
+    }
+
+    public ProductQuestion toEntity() {
+        return ProductQuestion.builder()
+                .content(this.getContent())
+                .status(this.getStatus())
+                .member(Member.builder().memberId(this.getMemberId()).build())
+                .productQuestionPhotoList(this.getProductQuestionPhotoReqList()
+                        .stream()
+                        .map((photo) -> new ProductQuestionPhotoReq().toEntity()).collect(Collectors.toList()))
                 .build();
     }
 }

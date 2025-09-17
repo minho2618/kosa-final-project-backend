@@ -14,11 +14,19 @@ public class ProductQuestionPhotoReq {
     private int sortOrder;
     private Long productQuestionId;
 
-    public ProductQuestionPhoto toProductQuestionPhoto(ProductQuestionPhotoReq req) {
+    public static ProductQuestionPhoto toProductQuestionPhoto(ProductQuestionPhotoReq req) {
         return ProductQuestionPhoto.builder()
                 .url(req.getUrl())
                 .sortOrder(req.getSortOrder())
                 .productQuestion(ProductQuestion.builder().questionId(req.getProductQuestionId()).build())
+                .build();
+    }
+
+    public ProductQuestionPhoto toEntity() {
+        return ProductQuestionPhoto.builder()
+                .url(this.getUrl())
+                .sortOrder(this.getSortOrder())
+                .productQuestion(ProductQuestion.builder().questionId(this.getProductQuestionId()).build())
                 .build();
     }
 }

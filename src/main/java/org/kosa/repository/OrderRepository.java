@@ -16,8 +16,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     // 사용자의 전체 주문내역 조회
     Optional<List<Order>> findByMember(Member member);
-
-//    Optional<Page<Order>> findByMember(Member member, Pageable pageable);
+    // Optional<Page<Order>> findByMember(Member member, Pageable pageable);
 
 //    // 상태로 조회
 //    Optional<List<Order>> findByStatus(OrderStatus status);
@@ -25,4 +24,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // 배송 조회(BUY-ORD-002)
 
     // 주문 취소 및 반품 요청(BUY-ORD-003)
+
+
 }
