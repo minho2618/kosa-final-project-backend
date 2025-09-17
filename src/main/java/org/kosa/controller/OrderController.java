@@ -1,5 +1,6 @@
 package org.kosa.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -21,7 +22,6 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-    // 주문하기
     @PostMapping("/")
     public ResponseEntity<?> createOrder(@RequestBody OrderReq orderReq) {
         orderService.createOrder(orderReq);
@@ -44,6 +44,15 @@ public class OrderController {
     @GetMapping("/")
     public ResponseEntity<?> findOrdersByMember(@RequestParam Long memberId) {
          List<Order> orderList = orderService.findOrdersByMember(memberId);
+
+        return ResponseEntity
+                .status(200)
+                .body(orderList);
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<?> findOrdersByYear(@RequestParam Long memberId, @RequestParam int year) {
+        List<OrderRes> orderList = orderService.findOrdersByYear(memberId, year);
 
         return ResponseEntity
                 .status(200)
