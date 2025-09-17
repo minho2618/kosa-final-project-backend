@@ -15,9 +15,9 @@ public class QuestionAnswerReq {
     private String content;
     private Long questionId;
 
-    public QuestionAnswer toQuestionAnswer(Question question) {
+    public static QuestionAnswer toQuestionAnswer(QuestionAnswerReq req,  Question question) {
         return QuestionAnswer.builder()
-                .content(content)
+                .content(req.getContent())
                 .question(question)
                 .build();
     }

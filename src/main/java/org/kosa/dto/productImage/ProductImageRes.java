@@ -14,7 +14,7 @@ public class ProductImageRes {
     private String altText;
     private int sortOrder;
 
-    public static ProductImageRes from(ProductImage entity) {
+    public static ProductImageRes toProductImageRes(ProductImage entity) {
         return ProductImageRes.builder()
                 .imageId(entity.getImageId())
                 .url(entity.getUrl())

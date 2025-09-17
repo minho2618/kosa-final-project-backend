@@ -39,6 +39,6 @@ public class CustomMemberDetails implements UserDetails {
     @Override
     public String getUsername() {
         log.info("getUsername ===>");
-        return member.getUsername();
+        return member.getEmail();
     }
 }

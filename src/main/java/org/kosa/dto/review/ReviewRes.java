@@ -30,7 +30,7 @@ public class ReviewRes {
     private List<ReviewPhotoRes> photos;
 
     // Entity -> DTO 변환을 위한 정적 팩토리 메소드
-    public static ReviewRes from(Review entity, List<ReviewPhotoRes> reviewPhotoRes) {
+    public static ReviewRes toReviewRes(Review entity) {
         return ReviewRes.builder()
                 .reviewId(entity.getReviewId())
                 .rating(entity.getRating())
@@ -40,7 +40,7 @@ public class ReviewRes {
                 .productId(entity.getProduct().getProductId())
                 .memberId(entity.getMember().getMemberId())
                 .memberName(entity.getMember().getName())
-                .photos(reviewPhotoRes) // 바로 할당
+                .photos(entity.getPhotos())
                 .build();
     }
 

@@ -2,12 +2,16 @@ package org.kosa.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.kosa.dto.productImage.ProductImageRes;
 import org.kosa.enums.ProductCategory;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -44,6 +48,13 @@ public class Product {
     @JoinColumn
             (name = "seller_member_id")
     private Seller seller;
+
+    @OneToMany
+            (fetch = FetchType.LAZY)
+    @JoinColumn
+            (name = "product_id")
+    @Cascade(CascadeType.REMOVE)
+    private List<ProductImageRes> images; // 전체 이미지 목록
 
 
     @Override
