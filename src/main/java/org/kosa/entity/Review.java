@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.kosa.dto.reviewPhoto.ReviewPhotoRes;
 
 import java.time.LocalDateTime;
@@ -25,8 +27,10 @@ public class Review {
     @Lob
     private String content;
 
+    @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     private LocalDateTime updatedAt;
 
     @ManyToOne
@@ -40,14 +44,6 @@ public class Review {
     @JoinColumn
             (name="member_id")
     private Member member;
-
-    @OneToMany
-            (fetch = FetchType.LAZY)
-    @JoinColumn
-            (name="review_id")
-    @Cascade(CascadeType.REMOVE)
-    private List<ReviewPhotoRes> photos;
-
 
 
     @Override

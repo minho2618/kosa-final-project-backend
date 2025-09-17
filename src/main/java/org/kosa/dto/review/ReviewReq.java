@@ -22,12 +22,12 @@ public class ReviewReq {
     private List<String> photoUrls; // 사진 URL들을 리스트로 받음
 
     // DTO를 Review 엔티티로 변환하는 메소드
-    public static Review toReview(Review rev, Product product, Member member) {
+    public static Review toReview(Review review, Product product, Member member) {
         return Review.builder()
                 .product(product)
                 .member(member)
-                .rating(rev.getRating())
-                .content(rev.getContent())
+                .rating(review.getRating())
+                .content(review.getContent())
                 .createdAt(LocalDateTime.now())
                 .build();
     }

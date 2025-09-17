@@ -1,6 +1,7 @@
 package org.kosa.dto.reviewPhoto;
 
 import lombok.*;
+import org.kosa.entity.ReviewPhoto;
 
 import java.time.LocalDateTime;
 
@@ -17,7 +18,7 @@ public class ReviewPhotoRes {
     private LocalDateTime createdAt;
 
     // Entity -> DTO 변환을 위한 정적 팩토리 메소드
-    public static ReviewPhotoRes toReviewPhotoRes(ReviewPhotoRes entity) {
+    public static ReviewPhotoRes toReviewPhotoRes(ReviewPhoto entity) {
         return ReviewPhotoRes.builder()
                 .photoId(entity.getPhotoId())
                 .url(entity.getUrl())

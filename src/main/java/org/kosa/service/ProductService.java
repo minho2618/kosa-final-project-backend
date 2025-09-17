@@ -1,15 +1,18 @@
-﻿package org.kosa.service;
+package org.kosa.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.kosa.dto.product.ProductReq;
 import org.kosa.dto.product.ProductRes;
 import org.kosa.dto.product.ProductCardRes;
+import org.kosa.dto.seller.SellerRes;
 import org.kosa.entity.Product;
+import org.kosa.entity.Seller;
 import org.kosa.enums.ProductCategory;
 import org.kosa.exception.InvalidInputException;
 import org.kosa.exception.RecordNotFoundException;
 import org.kosa.repository.ProductRepository;
+import org.kosa.repository.SellerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final SellerRepository sellerRepository;
 
     // ========================= 조회(읽기 전용) =========================
 
@@ -45,7 +49,7 @@ public class ProductService {
         // 사용자 정의 쿼리 메서드(Optional<List<Product>>) 가정
         List<Product> list = productRepository.findProductByCategory(category)
                 .orElseThrow(() -> new RecordNotFoundException(
-                        "해당 카테고리 상품이 없습니다. category=" + category, "Not Found"));
+                        "해당 카테고리 상품이 없습니다." , "Not Found category"));
 
         return list.stream()
                 .map(ProductCardRes::toProductCardRes)                            // 간단 DTO 매핑ａｓｄａｄ
@@ -68,17 +72,17 @@ public class ProductService {
 
     @Transactional                                            // 쓰기 트랜잭션(성공 시 커밋, 예외 시 롤백)
     public ProductRes createProduct(ProductReq req) {          // 상품 등록
-        // DTO -> Entity (요청 DTO에 toEntity() 존재한다고 가정)
-        Product entity = req.;                           // 필수 필드/기본값은 DTO 단계에서 검증 권장
+        Seller seller = null;
+        Product entity = ProductReq.toProduct(req, seller);                           // 필수 필드/기본값은 DTO 단계에서 검증 권장
         Product saved = productRepository.save(entity);            // INSERT & 영속화
         log.info("상품 등록 완료: id={}", saved.getProductId());     // 등록 결과 로깅
-        return ProductRes.from(saved);                             // 응답 DTO 반환
+        return ProductRes.toProductRes(saved);                             // 응답 DTO 반환
     }
 
     @Transactional
     public ProductRes updateProduct(Long productId, ProductReq req) { // 일부/전역 수정
         Product entity = productRepository.findById(productId)         // 수정 대상 조회(영속 상태)
-                .orElseThrow(() -> new DMLException("상품 수정 실패: 대상 없음 id=" + productId));
+                .orElseThrow(() -> new RecordNotFoundException("상품 수정 실패: 대상 없음 id=" + productId, "Not Found"));
 
         // ===== 더티 체킹을 활용한 부분 수정 =====
         // 필요한 필드만 안전하게 업데이트 (null/빈값 가드 로직은 프로젝트 정책에 맞게)
@@ -92,13 +96,13 @@ public class ProductService {
 
         // save 호출 없이도 트랜잭션 종료 시점에 UPDATE 실행(더티 체킹)
         log.info("상품 수정 완료: id={}", entity.getProductId());
-        return ProductRes.from(entity);                                        // 변경 후 DTO 반환
+        return ProductRes.toProductRes(entity);                                        // 변경 후 DTO 반환
     }
 
     @Transactional
     public void deleteProduct(Long productId) {                 // 상품 삭제
         Product entity = productRepository.findById(productId)      // 삭제 대상 조회
-                .orElseThrow(() -> new DMLException("상품 삭제 실패: 대상 없음 id=" + productId));
+                .orElseThrow(() -> new RecordNotFoundException("상품 삭제 실패: 대상 없음 id=" + productId, "Not Found"));
         productRepository.delete(entity);                            // DELETE
         log.info("상품 삭제 완료: id={}", productId);
     }
@@ -108,27 +112,27 @@ public class ProductService {
     @Transactional
     public ProductRes changeActive(Long productId, boolean active) { // 활성/비활성 토글
         Product entity = productRepository.findById(productId)
-                .orElseThrow(() -> new DMLException("상태 변경 실패: 대상 없음 id=" + productId));
+                .orElseThrow(() -> new RecordNotFoundException("상태 변경 실패: 대상 없음 id=" + productId, "Not Found"));
         entity.setIsActive(active);                                     // 상태 변경
         log.info("상품 활성상태 변경: id={}, active={}", productId, active);
-        return ProductRes.from(entity);                                  // 변경된 상태 반환
+        return ProductRes.toProductRes(entity);                                  // 변경된 상태 반환
     }
 
     @Transactional
     public ProductRes changePrice(Long productId, java.math.BigDecimal newPrice) { // 가격 변경
         Product entity = productRepository.findById(productId)
-                .orElseThrow(() -> new DMLException("가격 변경 실패: 대상 없음 id=" + productId));
+                .orElseThrow(() -> new RecordNotFoundException("가격 변경 실패: 대상 없음 id=" + productId, "Not Found"));
         entity.setPrice(newPrice);                                       // 값 검증은 상위/DTO에서
         log.info("상품 가격 변경: id={}, price={}", productId, newPrice);
-        return ProductRes.from(entity);
+        return ProductRes.toProductRes(entity);
     }
 
     @Transactional
     public ProductRes changeDiscount(Long productId, java.math.BigDecimal newDiscount) { // 할인 변경
         Product entity = productRepository.findById(productId)
-                .orElseThrow(() -> new DMLException("할인 변경 실패: 대상 없음 id=" + productId));
+                .orElseThrow(() -> new RecordNotFoundException("할인 변경 실패: 대상 없음 id=" + productId, "Not Found"));
         entity.setDiscountValue(newDiscount);
         log.info("상품 할인 변경: id={}, discount={}", productId, newDiscount);
-        return ProductRes.from(entity);
+        return ProductRes.toProductRes(entity);
     }
 }

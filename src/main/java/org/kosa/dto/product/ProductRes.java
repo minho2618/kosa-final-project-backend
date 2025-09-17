@@ -4,6 +4,7 @@ import lombok.*;
 import org.kosa.dto.productImage.ProductImageRes;
 import org.kosa.dto.seller.SellerRes;
 import org.kosa.entity.Product;
+import org.kosa.entity.ProductImage;
 import org.kosa.entity.Seller;
 import org.kosa.enums.ProductCategory;
 
@@ -30,7 +31,7 @@ public class ProductRes {
 
     // 엔티티 직접 노출 X
     private SellerRes seller;
-    private List<ProductImageRes> images;
+
 
     public static ProductRes toProductRes(Product product) {
         return ProductRes.builder()
@@ -44,7 +45,7 @@ public class ProductRes {
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .seller(product.getSeller() !=null ? SellerRes.toSellerRes(product.getSeller()) : null)
-                .images(product.getImages())
                 .build();
     }
 }
+
