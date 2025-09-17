@@ -2,6 +2,7 @@ package org.kosa.dto.product;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.kosa.dto.productImage.ProductImageReq;
 import org.kosa.entity.Product;
 import org.kosa.entity.Seller;
 import org.kosa.enums.ProductCategory;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ProductSaveReq {
+public class ProductReq {
 
     private String name;
     private String description;
@@ -21,23 +22,14 @@ public class ProductSaveReq {
     private Boolean isActive;
     private List<ProductImageReq> images;
 
-    // 이미지 정보를 담기 위한 내부 DTO
-    @Getter
-    @Setter
-    public static class ProductImageReq {
-        private String url;
-        private String altText;
-        private int sortOrder;
-    }
-
-    public Product toEntity(Seller seller) {
+    public static Product toProduct(ProductReq req, Seller seller) {
         return Product.builder()
-                .name(this.name)
-                .description(this.description)
-                .price(this.price)
-                .category(this.category)
-                .discountValue(this.discountValue)
-                .isActive(this.isActive)
+                .name(req.getName())
+                .description(req.getDescription())
+                .price(req.getPrice())
+                .category(req.getCategory())
+                .discountValue(req.getDiscountValue())
+                .isActive(req.getIsActive())
                 .seller(seller)
                 .build();
     }

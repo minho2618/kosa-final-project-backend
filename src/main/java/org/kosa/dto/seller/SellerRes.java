@@ -13,7 +13,7 @@ public class SellerRes {
     private String sellerName;
     private String sellerIntro;
 
-    public static SellerRes from(Seller entity) {
+    public static SellerRes toSellerRes(Seller entity) {
         return SellerRes.builder()
                 .memberId(entity.getMemberId())
                 .sellerName(entity.getSellerName())

@@ -4,21 +4,19 @@ import lombok.*;
 import org.kosa.dto.productImage.ProductImageRes;
 import org.kosa.dto.seller.SellerRes;
 import org.kosa.entity.Product;
-import org.kosa.entity.ProductImage;
 import org.kosa.entity.Seller;
 import org.kosa.enums.ProductCategory;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductDetailRes {
+public class ProductRes {
 
     private Long productId;
     private String name;
@@ -30,11 +28,12 @@ public class ProductDetailRes {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private SellerRes seller; // 판매자 정보
-    private List<ProductImageRes> images; // 전체 이미지 목록
+    // 엔티티 직접 노출 X
+    private SellerRes seller;
+    private List<ProductImageRes> images;
 
-    public static ProductDetailRes from(Product product, List<ProductImage> images, Seller seller) {
-        return ProductDetailRes.builder()
+    public static ProductRes toProductRes(Product product) {
+        return ProductRes.builder()
                 .productId(product.getProductId())
                 .name(product.getName())
                 .description(product.getDescription())
@@ -44,10 +43,8 @@ public class ProductDetailRes {
                 .isActive(product.getIsActive())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
-                .seller(SellerRes.from(seller))
-                .images(images.stream()
-                        .map(ProductImageRes::from)
-                        .collect(Collectors.toList()))
+                .seller(product.getSeller() !=null ? SellerRes.toSellerRes(product.getSeller()) : null)
+                .images(product.getImages())
                 .build();
     }
 }
