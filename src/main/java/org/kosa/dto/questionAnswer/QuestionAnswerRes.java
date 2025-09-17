@@ -19,7 +19,7 @@ public class QuestionAnswerRes {
     private String content;
     private LocalDateTime createdAt;
 
-    public QuestionAnswerRes toQuestionAnswerRes(QuestionAnswer questionAnswer){
+    public static QuestionAnswerRes toQuestionAnswerRes(QuestionAnswer questionAnswer){
         return QuestionAnswerRes.builder()
                 .AnswerId(questionAnswer.getAnswerId())
                 .QuestionId(questionAnswer.getQuestion().getQuestionId())

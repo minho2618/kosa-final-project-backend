@@ -13,15 +13,13 @@ import org.kosa.entity.Member;
 public class MemberUpdateReq {
     private String name;
     private String phoneNum;
-    private String email;
     private String address;
 
-    public Member toMember(){
+    public static Member toMember(MemberUpdateReq req){
         return Member.builder()
-                .name(name)
-                .phoneNum(phoneNum)
-                .email(email)
-                .address(address)
+                .name(req.getName())
+                .phoneNum(req.getPhoneNum())
+                .address(req.getAddress())
                 .build();
     }
 }

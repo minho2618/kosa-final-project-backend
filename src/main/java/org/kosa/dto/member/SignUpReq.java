@@ -11,20 +11,18 @@ import org.kosa.entity.Member;
 @Slf4j
 @Builder
 public class SignUpReq {
-    private String username;
     private String email;
     private String password;
     private String name;
     private String phoneNum;
     private String address;
 
-    public Member toMember(){
+    public static Member toMember(SignUpReq req){
         return Member.builder()
-                .username(username)
-                .email(email)
-                .name(name)
-                .phoneNum(phoneNum)
-                .address(address)
+                .email(req.getEmail())
+                .name(req.getName())
+                .phoneNum(req.getPhoneNum())
+                .address(req.getAddress())
                 .build();
     }
 }

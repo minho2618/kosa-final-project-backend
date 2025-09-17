@@ -68,7 +68,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter{
         Map<String, Object> map = new HashMap<>();
         Member member = customMemberDetails.getMember();
         map.put("memberId", member.getMemberId());
-        map.put("email", member.getEmail());
+        map.put("username", member.getEmail());
         map.put("name", member.getName());
         map.put("address", member.getAddress());
 

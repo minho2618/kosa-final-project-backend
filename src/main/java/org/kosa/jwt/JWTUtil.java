@@ -41,10 +41,10 @@ public class JWTUtil {
         return re;
     }
     //검증 Id
-    public String getEmail(String token) {
-        log.info("getEmail(String token)  call");
-        String re = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("email", String.class);
-        log.info("getEmail(String token)  re = {}" ,re);
+    public String getName(String token) {
+        log.info("getName(String token)  call");
+        String re = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("name", String.class);
+        log.info("getName(String token)  re = {}" ,re);
         return re;
     }
     
@@ -68,8 +68,8 @@ public class JWTUtil {
         log.info("createJwt  call");
         return Jwts.builder()
                 .claim("memberId", member.getMemberId())//멤버번호
-                .claim("username", member.getName()) //이름
-                .claim("email", member.getEmail()) //아이디
+                .claim("username", member.getEmail()) //이름
+                .claim("name", member.getName()) //아이디
                 .claim("role", role) //Role
                 .issuedAt(new Date(System.currentTimeMillis())) //현재로그인된 시간
                 .expiration(new Date(System.currentTimeMillis() + expiredMs)) //만료시간
