@@ -20,7 +20,7 @@ public class OrderItemReq {
     private BigDecimal totalPrice;
     private Long orderId;
 
-    public OrderItem toOrderItem(OrderItemReq req) {
+    public static OrderItem toOrderItem(OrderItemReq req) {
         return OrderItem.builder()
                 .product(Product.builder().productId(req.getProductId()).build())
                 .quantity(req.getQuantity())
@@ -28,6 +28,17 @@ public class OrderItemReq {
                 .discountValue(req.getDiscountValue())
                 .totalPrice(req.getTotalPrice())
                 .order(Order.builder().orderId(req.getOrderId()).build())
+                .build();
+    }
+
+    public OrderItem toEntity() {
+        return OrderItem.builder()
+                .product(Product.builder().productId(this.getProductId()).build())
+                .quantity(this.getQuantity())
+                .unitPrice(this.getUnitPrice())
+                .discountValue(this.getDiscountValue())
+                .totalPrice(this.getTotalPrice())
+                .order(Order.builder().orderId(this.getOrderId()).build())
                 .build();
     }
 }

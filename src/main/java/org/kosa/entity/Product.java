@@ -49,14 +49,6 @@ public class Product {
             (name = "seller_member_id")
     private Seller seller;
 
-    @OneToMany
-            (fetch = FetchType.LAZY)
-    @JoinColumn
-            (name = "product_id")
-    @Cascade(CascadeType.REMOVE)
-    private List<ProductImageRes> images; // 전체 이미지 목록
-
-
     @Override
     public String toString() {
         return "Products{" +

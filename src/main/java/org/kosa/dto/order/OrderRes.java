@@ -26,7 +26,7 @@ public class OrderRes {
     private String address;
     private List<OrderItemRes> orderItemList = new ArrayList<>();
 
-    public OrderRes toOrderRes(Order order) {
+    public static OrderRes toOrderRes(Order order) {
         return OrderRes.builder()
                 .orderId(order.getOrderId())
                 .memberRes(MemberRes.builder().build().toMemberRes(order.getMember()))

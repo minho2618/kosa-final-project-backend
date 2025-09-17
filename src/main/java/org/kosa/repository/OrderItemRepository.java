@@ -13,7 +13,6 @@ import java.util.Optional;
 
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
-
     // 주문으로 조회
     Optional<List<OrderItem>> findByOrder(Order order);
 

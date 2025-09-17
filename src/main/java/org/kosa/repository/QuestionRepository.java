@@ -12,7 +12,11 @@ import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
     // 찾기
+
     Optional<Question> findByQuestionId(Long id);
+
+    @Query("SELECT q FROM Question q JOIN FETCH q.member")
+    Page<Question> findAllQuestion(Pageable pageable);
     @Query("SELECT q FROM Question q JOIN FETCH q.member WHERE q.member.memberId = :memberId")
     Page<Question> findByMemberId(Long memberId, Pageable pageable);
     @Query("SELECT q FROM Question q JOIN FETCH q.member WHERE q.title LIKE %:title%")

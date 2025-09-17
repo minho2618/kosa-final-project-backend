@@ -1,6 +1,7 @@
 package org.kosa.dto.review;
 
 import lombok.*;
+import org.kosa.dto.reviewPhoto.ReviewPhotoReq;
 import org.kosa.dto.reviewPhoto.ReviewPhotoRes;
 import org.kosa.entity.Review;
 
@@ -26,8 +27,6 @@ public class ReviewRes {
     private Long memberId;
     private String memberName; // 예시로 추가
 
-    // 리뷰에 포함된 사진 목록
-    private List<ReviewPhotoRes> photos;
 
     // Entity -> DTO 변환을 위한 정적 팩토리 메소드
     public static ReviewRes toReviewRes(Review entity) {
@@ -40,7 +39,6 @@ public class ReviewRes {
                 .productId(entity.getProduct().getProductId())
                 .memberId(entity.getMember().getMemberId())
                 .memberName(entity.getMember().getName())
-                .photos(entity.getPhotos())
                 .build();
     }
 

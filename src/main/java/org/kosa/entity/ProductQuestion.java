@@ -42,11 +42,6 @@ public class ProductQuestion {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
-    @Cascade(CascadeType.REMOVE)
-    private List<ProductQuestionPhoto> productQuestionPhotoList;
-
     @Override
     public String toString() {
         return "ProductQuestion{" +

@@ -36,9 +36,9 @@ public interface ProductQuestionRepository extends JpaRepository<ProductQuestion
     List<ProductQuestion> findPendingQuestions(@Param("product") Product product, @Param("status") ProductQuestionsStatus status);
 
     // 상태 일괄 업데이트
-    @Modifying
+    /*@Modifying
     @Query("UPDATE ProductQuestion pq SET pq.status = :status WHERE pq.questionId IN :ids")
-    int updateStatusByIds(@Param("ids") List<Long> ids, @Param("status") ProductQuestionsStatus status);
+    int updateStatusByIds(@Param("ids") List<Long> ids, @Param("status") ProductQuestionsStatus status);*/
 
     // 연관 엔터티와 함께 조회
     @Query("SELECT DISTINCT pq FROM ProductQuestion pq LEFT JOIN FETCH pq.member LEFT JOIN FETCH pq.product WHERE pq.questionId = :id")

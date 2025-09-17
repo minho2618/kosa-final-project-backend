@@ -16,7 +16,7 @@ public class ProductQuestionPhotoRes {
     private int sortOrder;
     private Long productQuestionId;
 
-    public ProductQuestionPhotoRes toProductQuestionPhotoRes(ProductQuestionPhoto entity) {
+    public static ProductQuestionPhotoRes toProductQuestionPhotoRes(ProductQuestionPhoto entity) {
         return ProductQuestionPhotoRes.builder()
                 .photoId(entity.getPhotoId())
                 .url(entity.getUrl())

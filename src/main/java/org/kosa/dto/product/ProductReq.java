@@ -1,7 +1,6 @@
 package org.kosa.dto.product;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.kosa.dto.productImage.ProductImageReq;
 import org.kosa.entity.Product;
 import org.kosa.entity.Seller;
@@ -12,6 +11,9 @@ import java.util.List;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ProductReq {
 
     private String name;
@@ -20,7 +22,6 @@ public class ProductReq {
     private ProductCategory category;
     private BigDecimal discountValue;
     private Boolean isActive;
-    private List<ProductImageReq> images;
 
     public static Product toProduct(ProductReq req, Seller seller) {
         return Product.builder()

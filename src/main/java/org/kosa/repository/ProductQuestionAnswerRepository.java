@@ -1,6 +1,7 @@
 package org.kosa.repository;
 
 import org.kosa.entity.Member;
+import org.kosa.entity.ProductQuestion;
 import org.kosa.entity.ProductQuestionAnswer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -12,16 +13,16 @@ import java.util.List;
 public interface ProductQuestionAnswerRepository extends JpaRepository<ProductQuestionAnswer, Long> {
 
     // 질문별 답변 조회
-    // List<ProductQuestionAnswer> findByProductQuestion(ProductQuestion question);
+    ProductQuestionAnswer findByProductQuestion(ProductQuestion question);
 
     // 답변자별 조회
-    List<ProductQuestionAnswer> findByMember(Member member);
+    // List<ProductQuestionAnswer> findByMember(Member member);
 
     // 질문에 대한 답변 존재 여부
     // boolean existsByProductQuestion(ProductQuestion question);
 
     // 특정 기간 답변 조회
-    List<ProductQuestionAnswer> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+    // List<ProductQuestionAnswer> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
 
     // 질문과 답변 함께 조회
     // @Query("SELECT pqa FROM ProductQuestionAnswer pqa JOIN FETCH pqa.productQuestion JOIN FETCH pqa.member WHERE pqa.answerId = :id")

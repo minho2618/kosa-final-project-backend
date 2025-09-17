@@ -6,17 +6,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.kosa.dto.question.QuestionReq;
 import org.kosa.dto.question.QuestionRes;
 import org.kosa.entity.Question;
+import org.kosa.entity.QuestionAnswer;
 import org.kosa.exception.RecordNotFoundException;
+import org.kosa.repository.QuestionAnswerRepository;
 import org.kosa.repository.QuestionRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class QuestionService {
     private final QuestionRepository questionRepository;
+    private final QuestionAnswerRepository questionAnswerRepository;
 
     @Transactional
     public QuestionRes createQuestion(QuestionReq req){
@@ -37,7 +42,13 @@ public class QuestionService {
 
     @Transactional
     public void deleteQuestion(Long questionId){
+        questionAnswerRepository.deleteByQuestionId(questionId);
         questionRepository.deleteById(questionId);
+    }
+
+    public Page<QuestionRes> findAllQuestion(Pageable pageable){
+        Page<Question> list = questionRepository.findAllQuestion(pageable);
+        return list.map(QuestionRes::toQuestionRes);
     }
 
     public QuestionRes findByQuestionId(Long questionId) {

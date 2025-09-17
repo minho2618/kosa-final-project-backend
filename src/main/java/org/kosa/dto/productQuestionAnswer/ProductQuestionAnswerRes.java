@@ -20,7 +20,7 @@ public class ProductQuestionAnswerRes {
     private Long productQuestionId;
     private Long memberId;
 
-    public ProductQuestionAnswerRes toProductQuestionAnswerRes(ProductQuestionAnswer entity) {
+    public static ProductQuestionAnswerRes toProductQuestionAnswerRes(ProductQuestionAnswer entity) {
         return ProductQuestionAnswerRes.builder()
                 .answerId(entity.getAnswerId())
                 .content(entity.getContent())

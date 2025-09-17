@@ -32,7 +32,7 @@ public class ProductQuestionRes {
     private Long memberId;
     private List<ProductQuestionPhotoRes> productQuestionPhotoResList;
 
-    public ProductQuestionRes toProductQuestionRes(ProductQuestion entity) {
+    public static ProductQuestionRes toProductQuestionRes(ProductQuestion entity) {
         return ProductQuestionRes.builder()
                 .questionId(entity.getQuestionId())
                 .productId(entity.getProduct().getProductId())
