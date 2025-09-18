@@ -2,7 +2,6 @@ package org.kosa.dto.seller;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.kosa.entity.Member;
 import org.kosa.entity.Seller;
 
 @AllArgsConstructor
@@ -11,7 +10,7 @@ import org.kosa.entity.Seller;
 @Setter
 @Slf4j
 @Builder
-public class SellerSignUpReq {
+public class SellerSignUpInfo {
     private String country;
     private String postalCode;
     private String sellerAddress;
@@ -19,8 +18,8 @@ public class SellerSignUpReq {
     private String sellerName;
     private String sellerRegNo;
 
-    public static SellerSignUpReq toSellerSignUpReq(SellerSignUpReq req){
-        return SellerSignUpReq.builder()
+    public static Seller toSeller(SellerSignUpInfo req){
+        return Seller.builder()
                 .country(req.getCountry())
                 .postalCode(req.getPostalCode())
                 .sellerAddress(req.getSellerAddress())

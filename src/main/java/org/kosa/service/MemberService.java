@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.kosa.dto.member.MemberRes;
 import org.kosa.dto.member.MemberUpdateReq;
-import org.kosa.dto.member.MemberSignUpReq;
+import org.kosa.dto.member.MemberSignUpInfo;
 import org.kosa.entity.Member;
 import org.kosa.enums.MemberRole;
 import org.kosa.exception.DuplicateException;
@@ -23,11 +23,11 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
-    public MemberRes signUp(MemberSignUpReq memberSignUpReq) throws DuplicateException, InvalidInputException {
-        if(memberRepository.existsByEmail(memberSignUpReq.getEmail()))
+    public MemberRes signUp(MemberSignUpInfo memberSignUpInfo) throws DuplicateException, InvalidInputException {
+        if(memberRepository.existsByEmail(memberSignUpInfo.getEmail()))
             throw new DuplicateException("중복된 아이디", "Duplicate Email");
-        Member rMember = MemberSignUpReq.toMember(memberSignUpReq);
-        String pwdEnc = bCryptPasswordEncoder.encode(memberSignUpReq.getPassword());
+        Member rMember = MemberSignUpInfo.toMember(memberSignUpInfo);
+        String pwdEnc = bCryptPasswordEncoder.encode(memberSignUpInfo.getPassword());
         rMember.setPassword(pwdEnc);
         rMember.setRole(MemberRole.ROLE_CUSTOMER);
         Member cMember = memberRepository.save(rMember);
