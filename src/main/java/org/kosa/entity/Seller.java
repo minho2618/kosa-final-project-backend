@@ -31,7 +31,7 @@ public class Seller {
 
     @Column(length = 20)
     private String postalCode;
-    @Column(length = 2)
+    @Column(length = 20)
     private String country;
 
     @CreationTimestamp

@@ -17,6 +17,17 @@ public class SellerReq {
     private String sellerAddress;
     private String postalCode;
     private String country;
-    private SellerRole role;
+
+    public static Seller toSeller(SellerReq sellerReq){
+        return Seller.builder()
+                .memberId(sellerReq.getMemberId())
+                .sellerName(sellerReq.getSellerName())
+                .sellerIntro(sellerReq.getSellerIntro())
+                .sellerRegNo(sellerReq.getSellerRegNo())
+                .sellerAddress(sellerReq.getPostalCode())
+                .postalCode(sellerReq.getPostalCode())
+                .country(sellerReq.getCountry())
+                .build();
+    }
 
 }
