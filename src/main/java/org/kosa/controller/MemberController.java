@@ -3,7 +3,7 @@ package org.kosa.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kosa.dto.member.MemberUpdateReq;
-import org.kosa.dto.member.SignUpReq;
+import org.kosa.dto.member.MemberSignUpReq;
 import org.kosa.service.MemberService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -15,14 +15,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/members")
-@CrossOrigin(origins = {"*"}, maxAge = 6000)
 public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("")
-    public ResponseEntity<?> signUp(@RequestBody SignUpReq signUpReq){
-        log.info("signUp======>{}", signUpReq);
-        return new ResponseEntity<>(memberService.signUp(signUpReq), HttpStatus.CREATED);
+    public ResponseEntity<?> signUp(@RequestBody MemberSignUpReq memberSignUpReq){
+        log.info("signUp======>{}", memberSignUpReq);
+        return new ResponseEntity<>(memberService.signUp(memberSignUpReq), HttpStatus.CREATED);
     }
 
     @GetMapping("")

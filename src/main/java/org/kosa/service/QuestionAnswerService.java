@@ -7,6 +7,7 @@ import org.kosa.dto.questionAnswer.QuestionAnswerReq;
 import org.kosa.dto.questionAnswer.QuestionAnswerRes;
 import org.kosa.entity.Question;
 import org.kosa.entity.QuestionAnswer;
+import org.kosa.enums.QuestionStatus;
 import org.kosa.exception.RecordNotFoundException;
 import org.kosa.repository.QuestionAnswerRepository;
 import org.kosa.repository.QuestionRepository;
@@ -27,6 +28,7 @@ public class QuestionAnswerService {
         Question question = questionRepository.findByQuestionId(req.getQuestionId()).orElseThrow(()->
                 new RecordNotFoundException("찾을 수 없는 질문입니다.", "Not Found Question")
                 );
+        question.setStatus(QuestionStatus.ANSWERED);
         QuestionAnswer rQuestionAnswer = QuestionAnswerReq.toQuestionAnswer(req, question);
         QuestionAnswer cQuestionAnswer = questionAnswerRepository.save(rQuestionAnswer);
         return QuestionAnswerRes.toQuestionAnswerRes(cQuestionAnswer);
