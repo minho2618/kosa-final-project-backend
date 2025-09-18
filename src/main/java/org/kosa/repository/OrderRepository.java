@@ -23,7 +23,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // 연도별로 주문 조회
     @Query("select o " +
             "from Order o " +
-            "where Order.member.memberId=Member.memberId " +
+            "where o.member = :member " +
             "and o.createdAt between :start and :end")
     List<Order> findAllByMemberAndCreatedAtBetween(Member member, LocalDateTime start, LocalDateTime end);
 

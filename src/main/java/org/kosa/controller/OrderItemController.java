@@ -27,7 +27,7 @@ public class OrderItemController {
                 .body(orderItemId);
     }
 
-    @GetMapping("")
+    @GetMapping("/order")
     public ResponseEntity<?> findOrderItemsByOrder(@RequestParam Long orderId) {
         List<OrderItemRes> orderItemResList = orderItemService.findOrderItemsByOrder(orderId);
 
@@ -36,7 +36,7 @@ public class OrderItemController {
                 .body(orderItemResList);
     }
 
-    @GetMapping("")
+    @GetMapping("/product")
     public ResponseEntity<?> findOrderItemsByProduct(@RequestParam Long productId) {
         List<OrderItemRes> orderItemResList = orderItemService.findOrderItemsByProduct(productId);
 

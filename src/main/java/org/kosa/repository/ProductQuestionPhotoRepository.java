@@ -14,7 +14,7 @@ import java.util.List;
 public interface ProductQuestionPhotoRepository extends JpaRepository<ProductQuestionPhoto, Long> {
 
     // 질문별 사진 조회 (정렬순)
-    // List<ProductQuestionPhoto> findByProductQuestionOrderBySortOrder(ProductQuestion question);
+    List<ProductQuestionPhoto> findByProductQuestionQuestionIdOrderBySortOrder(Long questionId);
 
     // URL로 조회
     // ProductQuestionPhoto findByUrl(String url);
