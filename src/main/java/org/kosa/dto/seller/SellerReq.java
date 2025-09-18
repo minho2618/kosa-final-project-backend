@@ -13,7 +13,6 @@ public class SellerReq {
     private Long memberId;
     private String sellerName;
     private String sellerIntro;
-    private String sellerRegNo;
     private String sellerAddress;
     private String postalCode;
     private String country;
@@ -23,7 +22,6 @@ public class SellerReq {
                 .memberId(sellerReq.getMemberId())
                 .sellerName(sellerReq.getSellerName())
                 .sellerIntro(sellerReq.getSellerIntro())
-                .sellerRegNo(sellerReq.getSellerRegNo())
                 .sellerAddress(sellerReq.getPostalCode())
                 .postalCode(sellerReq.getPostalCode())
                 .country(sellerReq.getCountry())
