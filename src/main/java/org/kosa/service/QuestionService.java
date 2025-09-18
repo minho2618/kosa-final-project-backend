@@ -5,9 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kosa.dto.question.QuestionReq;
 import org.kosa.dto.question.QuestionRes;
+import org.kosa.entity.Member;
 import org.kosa.entity.Question;
 import org.kosa.entity.QuestionAnswer;
+import org.kosa.enums.QuestionStatus;
 import org.kosa.exception.RecordNotFoundException;
+import org.kosa.repository.MemberRepository;
 import org.kosa.repository.QuestionAnswerRepository;
 import org.kosa.repository.QuestionRepository;
 import org.springframework.data.domain.Page;
@@ -22,10 +25,15 @@ import java.util.List;
 public class QuestionService {
     private final QuestionRepository questionRepository;
     private final QuestionAnswerRepository questionAnswerRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public QuestionRes createQuestion(QuestionReq req){
-        Question rQuestion = QuestionReq.toQuestion(req);
+        Member member = memberRepository.findByMemberId(req.getMemberId()).orElseThrow(()->
+                new RecordNotFoundException("회원이 존재하지 않습니다.","Not Found Member")
+        );
+        Question rQuestion = QuestionReq.toQuestion(req, member);
+        rQuestion.setStatus(QuestionStatus.PENDING);
         Question cQuestion = questionRepository.save(rQuestion);
         return QuestionRes.toQuestionRes(cQuestion);
     }
