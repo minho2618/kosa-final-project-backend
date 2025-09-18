@@ -1,38 +1,30 @@
 package org.kosa.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.kosa.dto.product.ProductReq;
 import org.kosa.dto.productQuestion.ProductQuestionReq;
 import org.kosa.dto.productQuestion.ProductQuestionRes;
-import org.kosa.entity.*;
-import org.kosa.enums.ProductQuestionsStatus;
-import org.kosa.exception.RecordNotFoundException;
-import org.kosa.repository.ProductQuestionRepository;
-import org.kosa.service.ProductQuestionAnswerService;
-import org.kosa.service.ProductQuestionPhotoService;
 import org.kosa.service.ProductQuestionService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
+@Tag(name = "ProductQuestion", description = "상품 문의 API")
 @RestController
 @RequestMapping("/api/product-questions")
 @RequiredArgsConstructor
 public class ProductQuestionController {
 
     private final ProductQuestionService productQuestionService;
-    private final ProductQuestionPhotoService productQuestionPhotoService;
-    private final ProductQuestionAnswerService productQuestionAnswerService;
 
-
+    @Operation(summary = "상품 문의 생성", description = "특정 상품에 대한 문의를 생성합니다.")
+    @ApiResponse(responseCode = "201", description = "생성 성공, 생성된 문의 ID 반환")
     @PostMapping("")
-    public ResponseEntity<?> createProductQuestion(ProductQuestionReq productQuestionReq) {
+    public ResponseEntity<?> createProductQuestion(@RequestBody ProductQuestionReq productQuestionReq) {
         Long productQuestionId = productQuestionService.createProductQuestion(productQuestionReq);
 
         return ResponseEntity
@@ -40,8 +32,11 @@ public class ProductQuestionController {
                 .body(productQuestionId);
     }
 
+    @Operation(summary = "상품별 문의 목록 조회", description = "특정 상품에 달린 모든 문의 목록을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "조회 성공")
     @GetMapping("/{productId}")
-    public ResponseEntity<?> findByProduct(@PathVariable Long productId) {
+    public ResponseEntity<?> findByProduct(
+            @Parameter(description = "문의 목록을 조회할 상품의 ID", required = true) @PathVariable Long productId) {
         List<ProductQuestionRes> resList = productQuestionService.findByProduct(productId);
 
         return ResponseEntity
@@ -49,14 +44,11 @@ public class ProductQuestionController {
                 .body(resList);
     }
 
-    // ToDo: 페이지네이션 적용할 것
-    /*@GetMapping("/")
-    public ResponseEntity<?> findByProduct(Product product, Pageable pageable) {
-        return productQuestionRepository.findByProduct(product, pageable);
-    }*/
-
+    @Operation(summary = "회원별 문의 목록 조회", description = "특정 회원이 작성한 모든 상품 문의 목록을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "조회 성공")
     @GetMapping("/member/{id}")
-    public ResponseEntity<?> findByMember(@PathVariable Long id) {
+    public ResponseEntity<?> findByMember(
+            @Parameter(description = "문의 목록을 조회할 회원의 ID", required = true) @PathVariable Long id) {
         List<ProductQuestionRes> resList = productQuestionService.findByMember(id);
 
         return ResponseEntity
@@ -64,31 +56,11 @@ public class ProductQuestionController {
                 .body(resList);
     }
 
-
-    /*@Transactional(readOnly = true)
-    public ResponseEntity<?> findByStatus(ProductQuestionsStatus status) {
-        return productQuestionRepository.findByStatus(status);
-    }*/
-
-    /*@Transactional(readOnly = true)
-    public ResponseEntity<?> findByUpdatedAtAfter(LocalDateTime date) {
-        return productQuestionRepository.findByUpdatedAtAfter(date);
-    }*/
-
-    /*@Transactional(readOnly = true)
-    public ResponseEntity<?> findPendingQuestions(Product product, ProductQuestionsStatus status) {
-        return productQuestionRepository.findPendingQuestions(product, status);
-    }*/
-
-    /*@PutMapping("/status/{id}")
-    public ResponseEntity<?> updateStatusByIds(List<Long> ids, ProductQuestionsStatus status) {
-        productQuestionService.updateStatusByIds()
-
-        return productQuestionRepository.updateStatusByIds(ids, status);
-    }*/
-
+    @Operation(summary = "상품 문의 상세 조회", description = "문의 ID로 특정 상품 문의의 상세 내용을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "조회 성공")
     @GetMapping("/{id}")
-    public ResponseEntity<?> findByIdWithDetails(@PathVariable Long id) {
+    public ResponseEntity<?> findByIdWithDetails(
+            @Parameter(description = "상세 조회할 문의의 ID", required = true) @PathVariable Long id) {
         ProductQuestionRes productQuestionRes = productQuestionService.findByIdWithDetails(id);
 
         return ResponseEntity
@@ -96,8 +68,12 @@ public class ProductQuestionController {
                 .body(productQuestionRes);
     }
 
+    @Operation(summary = "상품 문의 수정", description = "기존 상품 문의 내용을 수정합니다.")
+    @ApiResponse(responseCode = "201", description = "수정 성공")
     @PutMapping("/{questionId}")
-    public ResponseEntity<?> updateProductQuestion(@PathVariable Long questionId, @RequestBody ProductQuestionReq productQuestionReq) {
+    public ResponseEntity<?> updateProductQuestion(
+            @Parameter(description = "수정할 문의의 ID", required = true) @PathVariable Long questionId,
+            @RequestBody ProductQuestionReq productQuestionReq) {
         productQuestionService.updateProductQuestion(questionId, productQuestionReq);
 
         return ResponseEntity
@@ -105,8 +81,11 @@ public class ProductQuestionController {
                 .body(productQuestionReq);
     }
 
+    @Operation(summary = "상품 문의 삭제", description = "상품 문의와 관련된 답변, 사진을 모두 함께 삭제합니다.")
+    @ApiResponse(responseCode = "200", description = "삭제 성공")
     @DeleteMapping("/{questionId}")
-    public ResponseEntity<?> deleteProductQuestion(@PathVariable Long questionId) {
+    public ResponseEntity<?> deleteProductQuestion(
+            @Parameter(description = "삭제할 문의의 ID", required = true) @PathVariable Long questionId) {
         productQuestionService.deleteProductQuestion(questionId);
 
         return ResponseEntity
