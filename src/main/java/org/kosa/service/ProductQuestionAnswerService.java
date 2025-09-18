@@ -25,7 +25,7 @@ public class ProductQuestionAnswerService {
     @Transactional
     public Long createProductQuestionAnswer(ProductQuestionAnswerReq req) throws RecordNotFoundException {
         // 질문이 존재하는 지 확인
-        ProductQuestion question = productQuestionService.findByIdWithDetails(req.getProductQuestionId());
+        ProductQuestionRes question = productQuestionService.findByIdWithDetails(req.getProductQuestionId());
         if (question == null)
             throw new RecordNotFoundException("해당하는 상품문의가 존재하지 않습니다.", "NO PRODUCT-QUESTION");
         
