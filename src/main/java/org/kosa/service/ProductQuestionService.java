@@ -5,6 +5,7 @@ import org.kosa.dto.member.MemberRes;
 import org.kosa.dto.product.ProductRes;
 import org.kosa.dto.productQuestion.ProductQuestionReq;
 import org.kosa.dto.productQuestion.ProductQuestionRes;
+import org.kosa.dto.productQuestionAnswer.ProductQuestionAnswerRes;
 import org.kosa.entity.*;
 import org.kosa.enums.ProductQuestionsStatus;
 import org.kosa.exception.RecordNotFoundException;
@@ -111,14 +112,14 @@ public class ProductQuestionService {
     @Transactional
     public void deleteProductQuestion(Long questionId) {
         // 1. 답변 제거(있다면)
-        ProductQuestionAnswer answer = productQuestionAnswerService.findByProductQuestionId(questionId);
+        ProductQuestionAnswerRes answer = productQuestionAnswerService.findByProductQuestionId(questionId);
         if (answer != null) {
             productQuestionAnswerService.deleteProductQuestionAnswer(answer.getAnswerId());
         }
         
         // 2. 사진 제거(있다면)
         List<ProductQuestionPhoto> productQuestionPhotoList =
-                productQuestionPhotoService.findByProductQuestionOrderBySortOrder();
+                productQuestionPhotoService.findByProductQuestionOrderBySortOrder(questionId);
         productQuestionPhotoList
                 .forEach((p) -> {
                     productQuestionPhotoService.deleteProductQuestionPhoto(p.getPhotoId());
