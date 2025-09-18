@@ -11,7 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kosa.dto.member.MemberRes;
 import org.kosa.dto.member.MemberUpdateReq;
-import org.kosa.dto.member.MemberSignUpReq;
+import org.kosa.dto.member.MemberSignUpInfo;
+import org.kosa.dto.signUp.SignUpReq;
 import org.kosa.service.MemberService;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Pageable;
@@ -35,9 +36,10 @@ public class MemberController {
             @ApiResponse(responseCode = "417", description = "중복된 이메일", content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
     @PostMapping("")
-    public ResponseEntity<?> signUp(@RequestBody MemberSignUpReq memberSignUpReq){
-        log.info("signUp======>{}", memberSignUpReq);
-        return new ResponseEntity<>(memberService.signUp(memberSignUpReq), HttpStatus.CREATED);
+    public ResponseEntity<?> signUp(@RequestBody SignUpReq req){
+        log.info("signUp======>{}", req);
+        MemberSignUpInfo memberSignUpInfo = req.getMemberSignUpInfo();
+        return new ResponseEntity<>(memberService.signUp(memberSignUpInfo), HttpStatus.CREATED);
     }
 
     @Operation(summary = "전체 회원 목록 조회", description = "시스템에 등록된 모든 활성 회원을 페이지 단위로 조회합니다.")

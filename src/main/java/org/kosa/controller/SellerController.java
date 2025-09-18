@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.kosa.dto.seller.SellerReq;
 import org.kosa.dto.seller.SellerRes;
+import org.kosa.dto.signUp.SignUpReq;
 import org.kosa.service.SellerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,7 +28,7 @@ public class SellerController {
 
     @Operation(summary = "전체 판매자 목록 조회", description = "시스템에 등록된 모든 판매자 목록을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "조회 성공")
-    @GetMapping
+    @GetMapping("")
     public List<SellerRes> listAll() {
         return sellerService.listAll();
     }
@@ -41,8 +42,9 @@ public class SellerController {
 
     @Operation(summary = "판매자 등록", description = "기존 회원을 판매자로 등록합니다.")
     @ApiResponse(responseCode = "201", description = "등록 성공")
-    @PostMapping
-    public ResponseEntity<SellerRes> create(@RequestBody @Valid SellerReq req) {
+    @PostMapping("")
+    public ResponseEntity<?> signUpSeller(@RequestBody SignUpReq req) {
+
         SellerRes res = sellerService.create(req);
         return ResponseEntity
                 .created(URI.create("/api/sellers/" + res.getMemberId()))
@@ -58,11 +60,4 @@ public class SellerController {
         return sellerService.update(memberId, req);
     }
 
-    @Operation(summary = "판매자 삭제", description = "판매자 정보를 시스템에서 삭제합니다.")
-    @ApiResponse(responseCode = "204", description = "삭제 성공")
-    @DeleteMapping("/{memberId}")
-    public ResponseEntity<Void> delete(@Parameter(description = "삭제할 판매자의 회원 ID", required = true) @PathVariable Long memberId) {
-        sellerService.delete(memberId);
-        return ResponseEntity.noContent().build();
-    }
 }
