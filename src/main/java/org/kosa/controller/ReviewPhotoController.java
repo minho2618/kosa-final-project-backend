@@ -1,5 +1,9 @@
 package org.kosa.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.kosa.dto.reviewPhoto.ReviewPhotoReq;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@Tag(name = "ReviewPhoto", description = "리뷰 사진 관리 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/reviews/{reviewId}/photos")
@@ -20,48 +25,57 @@ public class ReviewPhotoController {
 
     private final ReviewPhotoService reviewPhotoService;
 
-    /** 리뷰의 사진 목록(정렬 순) */
+    @Operation(summary = "리뷰의 사진 목록 조회", description = "특정 리뷰에 첨부된 모든 사진을 정렬 순서대로 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "조회 성공")
     @GetMapping
-    public List<ReviewPhotoRes> list(@PathVariable Long reviewId) {
+    public List<ReviewPhotoRes> list(@Parameter(description = "사진 목록을 조회할 리뷰 ID") @PathVariable Long reviewId) {
         return reviewPhotoService.listByReview(reviewId);
     }
 
-    /** 대표 사진(정렬 1순위) */
+    @Operation(summary = "리뷰의 대표 사진 조회", description = "특정 리뷰의 대표 사진(정렬 1순위)을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "조회 성공")
     @GetMapping("/cover")
-    public ReviewPhotoRes cover(@PathVariable Long reviewId) {
+    public ReviewPhotoRes cover(@Parameter(description = "대표 사진을 조회할 리뷰 ID") @PathVariable Long reviewId) {
         return reviewPhotoService.getCover(reviewId);
     }
 
-    /** 단건 추가 */
+    @Operation(summary = "리뷰 사진 추가", description = "특정 리뷰에 사진을 추가합니다.")
+    @ApiResponse(responseCode = "201", description = "추가 성공")
     @PostMapping
-    public ResponseEntity<ReviewPhotoRes> add(@PathVariable Long reviewId,
-                                              @RequestBody @Valid ReviewPhotoReq req) {
+    public ResponseEntity<ReviewPhotoRes> add(
+            @Parameter(description = "사진을 추가할 리뷰 ID") @PathVariable Long reviewId,
+            @RequestBody @Valid ReviewPhotoReq req) {
         ReviewPhotoRes res = reviewPhotoService.add(reviewId, req);
         return ResponseEntity
                 .created(URI.create(String.format("/api/reviews/%d/photos/%d", reviewId, res.getPhotoId())))
                 .body(res);
     }
 
-    /** 전체 교체(기존 삭제 후 새 목록으로) */
+    @Operation(summary = "리뷰 사진 전체 교체", description = "기존 사진을 모두 삭제하고 새 사진 목록으로 교체합니다.")
+    @ApiResponse(responseCode = "200", description = "교체 성공")
     @PostMapping("/replace")
-    public List<ReviewPhotoRes> replaceAll(@PathVariable Long reviewId,
-                                           @RequestBody List<@Valid ReviewPhotoReq> reqs) {
+    public List<ReviewPhotoRes> replaceAll(
+            @Parameter(description = "사진을 교체할 리뷰 ID") @PathVariable Long reviewId,
+            @RequestBody List<@Valid ReviewPhotoReq> reqs) {
         return reviewPhotoService.replaceAll(reviewId, reqs);
     }
 
-    /** 단건 수정 (URL/정렬) */
+    @Operation(summary = "리뷰 사진 정보 수정", description = "특정 사진의 URL 또는 정렬 순서를 수정합니다.")
+    @ApiResponse(responseCode = "200", description = "수정 성공")
     @PutMapping("/{photoId}")
-    public ReviewPhotoRes update(@PathVariable Long reviewId,
-                                 @PathVariable Long photoId,
-                                 @RequestBody @Valid ReviewPhotoReq req) {
-        // reviewId는 경로 일치 확인 용도로만 쓰려면 서비스에 검증 로직 추가 가능
+    public ReviewPhotoRes update(
+            @Parameter(description = "소속 리뷰 ID") @PathVariable Long reviewId,
+            @Parameter(description = "수정할 사진 ID") @PathVariable Long photoId,
+            @RequestBody @Valid ReviewPhotoReq req) {
         return reviewPhotoService.update(photoId, req);
     }
 
-    /** 단건 삭제 */
+    @Operation(summary = "리뷰 사진 삭제", description = "특정 사진을 삭제합니다.")
+    @ApiResponse(responseCode = "204", description = "삭제 성공")
     @DeleteMapping("/{photoId}")
-    public ResponseEntity<Void> delete(@PathVariable Long reviewId,
-                                       @PathVariable Long photoId) {
+    public ResponseEntity<Void> delete(
+            @Parameter(description = "소속 리뷰 ID") @PathVariable Long reviewId,
+            @Parameter(description = "삭제할 사진 ID") @PathVariable Long photoId) {
         reviewPhotoService.delete(photoId);
         return ResponseEntity.noContent().build();
     }
