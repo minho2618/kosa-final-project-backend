@@ -20,15 +20,9 @@ import java.util.List;
 public class ProductQuestionAnswerService {
 
     private final ProductQuestionAnswerRepository productQuestionAnswerRepository;
-    private final ProductQuestionService productQuestionService;
 
     @Transactional
     public Long createProductQuestionAnswer(ProductQuestionAnswerReq req) throws RecordNotFoundException {
-        // 질문이 존재하는 지 확인
-        ProductQuestion question = productQuestionService.findByIdWithDetails(req.getProductQuestionId());
-        if (question == null)
-            throw new RecordNotFoundException("해당하는 상품문의가 존재하지 않습니다.", "NO PRODUCT-QUESTION");
-        
         ProductQuestionAnswer productQuestionAnswer = req.toEntity();
 
         ProductQuestionAnswer savedProductQuestionAnswer = productQuestionAnswerRepository.save(productQuestionAnswer);
@@ -37,17 +31,11 @@ public class ProductQuestionAnswerService {
     }
 
     public ProductQuestionAnswer findByProductQuestion(ProductQuestion productQuestion) {
-        return productQuestionAnswerRepository.findByProductQuestion(productQuestion);
+        return productQuestionAnswerRepository.findByProductQuestionId(productQuestion.getQuestionId());
     }
 
     public ProductQuestionAnswerRes findByProductQuestionId(Long productQuestionId) {
-        ProductQuestionRes productQuestionRes = productQuestionService.findByIdWithDetails(productQuestionId);
-        ProductQuestion productQuestion = ProductQuestion
-                .builder()
-                .questionId(productQuestionRes.getQuestionId())
-                .build();
-
-        ProductQuestionAnswer productQuestionAnswer = productQuestionAnswerRepository.findByProductQuestion(productQuestion);
+        ProductQuestionAnswer productQuestionAnswer = productQuestionAnswerRepository.findByProductQuestionId(productQuestionId);
 
         return ProductQuestionAnswerRes.toProductQuestionAnswerRes(productQuestionAnswer);
     }

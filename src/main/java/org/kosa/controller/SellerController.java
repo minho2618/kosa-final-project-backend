@@ -1,5 +1,9 @@
 package org.kosa.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.kosa.dto.seller.SellerReq;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+@Tag(name = "Seller", description = "판매자 관리 API")
 @RestController
 @RequestMapping("/api/sellers")
 @RequiredArgsConstructor
@@ -20,19 +25,22 @@ public class SellerController {
 
     private final SellerService sellerService;
 
-    /** 전체 목록 */
+    @Operation(summary = "전체 판매자 목록 조회", description = "시스템에 등록된 모든 판매자 목록을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "조회 성공")
     @GetMapping
     public List<SellerRes> listAll() {
         return sellerService.listAll();
     }
 
-    /** 단건 조회 (memberId = Seller PK) */
+    @Operation(summary = "판매자 정보 조회", description = "Member ID를 사용하여 특정 판매자의 정보를 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "조회 성공")
     @GetMapping("/{memberId}")
-    public SellerRes get(@PathVariable Long memberId) {
+    public SellerRes get(@Parameter(description = "조회할 판매자의 회원 ID", required = true) @PathVariable Long memberId) {
         return sellerService.getByMemberId(memberId);
     }
 
-    /** 생성 */
+    @Operation(summary = "판매자 등록", description = "기존 회원을 판매자로 등록합니다.")
+    @ApiResponse(responseCode = "201", description = "등록 성공")
     @PostMapping
     public ResponseEntity<SellerRes> create(@RequestBody @Valid SellerReq req) {
         SellerRes res = sellerService.create(req);
@@ -41,31 +49,20 @@ public class SellerController {
                 .body(res);
     }
 
-    /** 부분 수정 (필드만 전달된 것 갱신) */
+    @Operation(summary = "판매자 정보 수정", description = "기존 판매자의 정보를 부분적으로 수정합니다.")
+    @ApiResponse(responseCode = "200", description = "수정 성공")
     @PatchMapping("/{memberId}")
-    public SellerRes update(@PathVariable Long memberId, @RequestBody SellerReq req) {
+    public SellerRes update(
+            @Parameter(description = "수정할 판매자의 회원 ID", required = true) @PathVariable Long memberId,
+            @RequestBody SellerReq req) {
         return sellerService.update(memberId, req);
     }
 
-    /** 삭제 */
+    @Operation(summary = "판매자 삭제", description = "판매자 정보를 시스템에서 삭제합니다.")
+    @ApiResponse(responseCode = "204", description = "삭제 성공")
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<Void> delete(@PathVariable Long memberId) {
+    public ResponseEntity<Void> delete(@Parameter(description = "삭제할 판매자의 회원 ID", required = true) @PathVariable Long memberId) {
         sellerService.delete(memberId);
         return ResponseEntity.noContent().build();
     }
 }
-/*
-사용 예시 (Postman)
-
-생성: POST /api/sellers (JSON Body는 SellerReq 구조)
-
-수정: PATCH /api/sellers/{memberId} (변경할 필드만 보내기)
-
-조회: GET /api/sellers/{memberId}
-
-목록: GET /api/sellers
-
-삭제: DELETE /api/sellers/{memberId}
-
-보안 적용 시 Spring Security에서 /api/sellers/** 접근권한 설정만 잊지 마세요.
- */

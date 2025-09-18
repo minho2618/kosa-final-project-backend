@@ -13,7 +13,7 @@ import java.util.List;
 public interface ProductQuestionAnswerRepository extends JpaRepository<ProductQuestionAnswer, Long> {
 
     // 질문별 답변 조회
-    ProductQuestionAnswer findByProductQuestion(ProductQuestion question);
+    ProductQuestionAnswer findByProductQuestionId(Long productQuestionId);
 
     // 답변자별 조회
     // List<ProductQuestionAnswer> findByMember(Member member);

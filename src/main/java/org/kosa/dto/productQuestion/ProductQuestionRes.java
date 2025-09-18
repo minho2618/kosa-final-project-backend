@@ -41,9 +41,6 @@ public class ProductQuestionRes {
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt())
                 .memberId(entity.getMember().getMemberId())
-                .productQuestionPhotoResList(entity.getProductQuestionPhotoList().stream()
-                        .map((photo) -> new ProductQuestionPhotoRes().toProductQuestionPhotoRes(photo))
-                        .collect(Collectors.toList()))
                 .build();
     }
 }
