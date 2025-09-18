@@ -14,7 +14,6 @@ import java.util.List;
 public class ProductQuestionPhotoService {
 
     private final ProductQuestionPhotoRepository productQuestionPhotoRepository;
-    private final ProductQuestionService productQuestionService;
 
     @Transactional
     public void saveProductQuestionPhotos(List<ProductQuestionPhoto> photos) {
@@ -22,9 +21,7 @@ public class ProductQuestionPhotoService {
     }
 
     public List<ProductQuestionPhoto> findByProductQuestionOrderBySortOrder(Long questionId) {
-         productQuestionService.findByProduct(questionId);
-
-        return productQuestionPhotoRepository.findAll(); // Placeholder
+        return productQuestionPhotoRepository.findByProductQuestionQuestionIdOrderBySortOrder(questionId);
     }
 
     /*@Transactional(readOnly = true)

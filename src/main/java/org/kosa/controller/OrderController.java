@@ -50,7 +50,7 @@ public class OrderController {
                 .body(orderList);
     }
 
-    @GetMapping("/")
+    @GetMapping("/year")
     public ResponseEntity<?> findOrdersByYear(@RequestParam Long memberId, @RequestParam int year) {
         List<OrderRes> orderList = orderService.findOrdersByYear(memberId, year);
 
