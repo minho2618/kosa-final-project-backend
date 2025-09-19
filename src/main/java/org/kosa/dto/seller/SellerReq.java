@@ -13,10 +13,19 @@ public class SellerReq {
     private Long memberId;
     private String sellerName;
     private String sellerIntro;
-    private String sellerRegNo;
     private String sellerAddress;
     private String postalCode;
     private String country;
-    private SellerRole role;
+
+    public static Seller toSeller(SellerReq sellerReq){
+        return Seller.builder()
+                .memberId(sellerReq.getMemberId())
+                .sellerName(sellerReq.getSellerName())
+                .sellerIntro(sellerReq.getSellerIntro())
+                .sellerAddress(sellerReq.getPostalCode())
+                .postalCode(sellerReq.getPostalCode())
+                .country(sellerReq.getCountry())
+                .build();
+    }
 
 }

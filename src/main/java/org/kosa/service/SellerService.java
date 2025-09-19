@@ -2,8 +2,11 @@ package org.kosa.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kosa.dto.member.MemberSignUpInfo;
 import org.kosa.dto.seller.SellerReq;
 import org.kosa.dto.seller.SellerRes;
+import org.kosa.dto.seller.SellerSignUpInfo;
+import org.kosa.dto.signUp.SignUpReq;
 import org.kosa.entity.Member;
 import org.kosa.entity.Seller;
 import org.kosa.enums.SellerRole;
@@ -42,54 +45,30 @@ public class SellerService {
 
     // ========= 생성 =========
     @Transactional
-    public SellerRes create(SellerReq req) {
-        validateCreate(req);
-
-        Long memberId = req.getMemberId();
-        if (sellerRepository.existsById(memberId)) {
-            throw new DuplicateException("이미 판매자로 등록된 회원입니다.", "Not Found");
-        }
-
-        Member member = ensureMember(memberId);
-
-        SellerRole role = (req.getRole() == null) ? SellerRole.BASIC : req.getRole();
-
-        Seller seller = Seller.builder()
-                // @MapsId 구조
-                .member(member)
-                .memberId(member.getMemberId())
-                .sellerName(req.getSellerName())
-                .sellerIntro(req.getSellerIntro())
-                .sellerRegNo(req.getSellerRegNo())
-                .sellerAddress(req.getSellerAddress())
-                .postalCode(req.getPostalCode())
-                .country(req.getCountry())
-                .role(role)
-                .build();
-
-        Seller saved = sellerRepository.save(seller);
-        log.info("판매자 등록 완료: memberId={}", saved.getMemberId());
-        return SellerRes.toSellerRes(saved);
+    public SellerRes create(SignUpReq req) {
+        MemberSignUpInfo memberSignUpInfo = req.getMemberSignUpInfo();
+        SellerSignUpInfo sellerSignUpInfo = req.getSellerSignUpInfo();
+        Member cMember = MemberSignUpInfo.toMember(memberSignUpInfo);
+        Member member = memberRepository.save(cMember);
+        Seller cSeller = SellerSignUpInfo.toSeller(sellerSignUpInfo);
+        cSeller.setMember(member);
+        if(sellerSignUpInfo.getSellerRegNo().isEmpty())
+            cSeller.setRole(SellerRole.Unauthenticated);
+        else
+            cSeller.setRole(SellerRole.authenticated);
+        Seller seller = sellerRepository.save(cSeller);
+        log.info("판매자 등록 완료: memberId={}", seller.getMemberId());
+        return SellerRes.toSellerRes(seller);
     }
 
     // ========= 수정(부분 수정) =========
     @Transactional
     public SellerRes update(Long memberId, SellerReq req) {
-        Seller entity = sellerRepository.findById(memberId)
+        Seller uSeller = sellerRepository.findById(memberId)
                 .orElseThrow(() -> new RecordNotFoundException("판매자 없음", "Not Found Seller"));
-
-        applyPatch(entity, req);
+        applyPatch(uSeller, req);
         // 더티체킹으로 UPDATE 반영
-        return SellerRes.toSellerRes(entity);
-    }
-
-    // ========= 삭제 =========
-    @Transactional
-    public void delete(Long memberId) {
-        Seller entity = sellerRepository.findById(memberId)
-                .orElseThrow(() -> new RecordNotFoundException("판매자 없음", "Not Found Seller"));
-        sellerRepository.delete(entity);
-        log.info("판매자 삭제: memberId={}", memberId);
+        return SellerRes.toSellerRes(uSeller);
     }
 
     // ========= 내부 유틸 =========
@@ -108,11 +87,9 @@ public class SellerService {
     private void applyPatch(Seller entity, SellerReq req) {
         if (req.getSellerName() != null)   entity.setSellerName(req.getSellerName());
         if (req.getSellerIntro() != null)  entity.setSellerIntro(req.getSellerIntro());
-        if (req.getSellerRegNo() != null)  entity.setSellerRegNo(req.getSellerRegNo());
         if (req.getSellerAddress() != null)entity.setSellerAddress(req.getSellerAddress());
         if (req.getPostalCode() != null)   entity.setPostalCode(req.getPostalCode());
         if (req.getCountry() != null)      entity.setCountry(req.getCountry());
-        if (req.getRole() != null)         entity.setRole(req.getRole());
         // memberId는 PK이자 @MapsId라 수정 대상에서 제외(변경하려면 삭제 후 재생성 정책 권장)
     }
 }
