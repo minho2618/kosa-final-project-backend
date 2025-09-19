@@ -75,7 +75,8 @@ public class SecurityConfig {
         cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));                     // Authorization 등 허용
         cfg.setExposedHeaders(List.of("Location"));
-        cfg.setAllowCredentials(true);                           // 쿠키/세션/withCredentials
+        //cfg.setAllowCredentials(true);                           // 쿠키/세션/withCredentials
+        cfg.addExposedHeader("Authorization");
         cfg.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
