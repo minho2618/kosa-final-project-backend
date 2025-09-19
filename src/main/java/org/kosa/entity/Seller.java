@@ -49,8 +49,6 @@ public class Seller {
     public String toString() {
         return "Seller{" +
                 "createdAt=" + createdAt +
-                ", country='" + country + '\'' +
-                ", postalCode='" + postalCode + '\'' +
                 ", sellerName='" + sellerName + '\'' +
                 ", sellerIntro='" + sellerIntro + '\'' +
                 ", sellerRegNo='" + sellerRegNo + '\'' +
