@@ -29,12 +29,12 @@ public class OrderRes {
     public static OrderRes toOrderRes(Order order) {
         return OrderRes.builder()
                 .orderId(order.getOrderId())
-                .memberRes(MemberRes.builder().build().toMemberRes(order.getMember()))
+                .memberRes(MemberRes.toMemberRes(order.getMember()))
                 .status(order.getStatus())
                 .createdAt(order.getCreatedAt())
                 .address(order.getAddress())
                 .orderItemList(order.getOrderItemList()
-                        .stream().map((o) -> new OrderItemRes().toOrderItemRes(o))
+                        .stream().map(OrderItemRes::toOrderItemRes)
                         .collect(Collectors.toList()))
                 .build();
     }

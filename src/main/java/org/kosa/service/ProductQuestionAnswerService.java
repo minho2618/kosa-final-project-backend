@@ -23,7 +23,7 @@ public class ProductQuestionAnswerService {
 
     @Transactional
     public Long createProductQuestionAnswer(ProductQuestionAnswerReq req) throws RecordNotFoundException {
-        ProductQuestionAnswer productQuestionAnswer = req.toEntity();
+        ProductQuestionAnswer productQuestionAnswer = ProductQuestionAnswerReq.toProductQuestionAnswer(req);
 
         ProductQuestionAnswer savedProductQuestionAnswer = productQuestionAnswerRepository.save(productQuestionAnswer);
 

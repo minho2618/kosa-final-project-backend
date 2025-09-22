@@ -61,11 +61,18 @@ public class MemberService {
             throw  new RecordNotFoundException("해당 Email의 회원을 찾을 수 없습니다.", "Not Found Email");
         return MemberRes.toMemberRes(fMember);
     }
-    public MemberRes findByMemberId(Long id) {
+
+    public MemberRes getMemberInfo(Long id) {
         Member fMember = memberRepository.findByMemberId(id).orElseThrow(()->
                 new RecordNotFoundException("해당 ID의 회원을 찾을 수 없습니다.", "Not Found Member Id")
         );
         return MemberRes.toMemberRes(fMember);
+    }
+
+    public Member findByMemberId(Long id){
+        return memberRepository.findByMemberId(id).orElseThrow(()->
+                new RecordNotFoundException("해당 ID의 회원을 찾을 수 없습니다.", "Not Found Member Id")
+        );
     }
 
     public String duplicateCheck(String email) {
