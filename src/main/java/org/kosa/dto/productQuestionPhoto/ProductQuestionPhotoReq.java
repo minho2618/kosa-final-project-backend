@@ -22,11 +22,4 @@ public class ProductQuestionPhotoReq {
                 .build();
     }
 
-    public ProductQuestionPhoto toEntity() {
-        return ProductQuestionPhoto.builder()
-                .url(this.getUrl())
-                .sortOrder(this.getSortOrder())
-                .productQuestion(ProductQuestion.builder().questionId(this.getProductQuestionId()).build())
-                .build();
-    }
 }

@@ -14,11 +14,16 @@ import java.util.Optional;
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     // 주문으로 조회
-    Optional<List<OrderItem>> findByOrder(Order order);
+    //Optional<List<OrderItem>> findByOrder(Order order);
+
+    @Query("SELECT oi FROM OrderItem oi JOIN FETCH oi.product WHERE oi.id = :orderItemId")
+    Optional<List<OrderItem>> findByOrderId(@Param("orderItemId") Long orderItemId);
 
     // Product로 조회
     List<OrderItem> findByProduct(Product product);
 
+    @Query("SELECT oi FROM OrderItem oi JOIN FETCH oi.product WHERE oi.product.id = :productId")
+    List<OrderItem> findByProductId(@Param("productId") Long productId);
     // 수량 범위로 조회
     List<OrderItem> findByQuantityGreaterThan(int quantity);
 

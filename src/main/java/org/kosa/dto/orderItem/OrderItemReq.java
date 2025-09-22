@@ -30,15 +30,4 @@ public class OrderItemReq {
                 .order(Order.builder().orderId(req.getOrderId()).build())
                 .build();
     }
-
-    public OrderItem toEntity() {
-        return OrderItem.builder()
-                .product(Product.builder().productId(this.getProductId()).build())
-                .quantity(this.getQuantity())
-                .unitPrice(this.getUnitPrice())
-                .discountValue(this.getDiscountValue())
-                .totalPrice(this.getTotalPrice())
-                .order(Order.builder().orderId(this.getOrderId()).build())
-                .build();
-    }
 }

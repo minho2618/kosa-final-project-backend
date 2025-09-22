@@ -30,13 +30,4 @@ public class ProductQuestionReq {
                 .member(Member.builder().memberId(req.getMemberId()).build())
                 .build();
     }
-
-    public ProductQuestion toEntity() {
-        return ProductQuestion.builder()
-                .product(Product.builder().productId(this.getProductId()).build())
-                .content(this.getContent())
-                .status(this.getStatus())
-                .member(Member.builder().memberId(this.getMemberId()).build())
-                .build();
-    }
 }

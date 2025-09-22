@@ -38,7 +38,7 @@ public class ProductQuestionService {
             throw new RecordNotFoundException("해당 상품이 존재하지 않습니다.", "NO PRODUCT");
         }
 
-        ProductQuestion productQuestion = productQuestionReq.toEntity();
+        ProductQuestion productQuestion = ProductQuestionReq.toProductQuestion(productQuestionReq);
         ProductQuestion savedProductQuestion = productQuestionRepository.save(productQuestion);
         return savedProductQuestion.getQuestionId();
     }

@@ -48,6 +48,9 @@ dependencies {
     // RabbitMQ
     testImplementation 'org.springframework.amqp:spring-rabbit-test'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.3'
+    
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {
