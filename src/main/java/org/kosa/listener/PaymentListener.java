@@ -3,6 +3,7 @@ package org.kosa.listener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kosa.config.RabbitMQConfig;
+import org.kosa.entity.Order;
 import org.kosa.service.OrderService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
