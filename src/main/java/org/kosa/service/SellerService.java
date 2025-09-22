@@ -2,6 +2,7 @@ package org.kosa.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kosa.dto.member.MemberRes;
 import org.kosa.dto.member.MemberSignUpInfo;
 import org.kosa.dto.seller.SellerReq;
 import org.kosa.dto.seller.SellerRes;
@@ -9,12 +10,15 @@ import org.kosa.dto.seller.SellerSignUpInfo;
 import org.kosa.dto.signUp.SignUpReq;
 import org.kosa.entity.Member;
 import org.kosa.entity.Seller;
+import org.kosa.enums.MemberRole;
 import org.kosa.enums.SellerRole;
 import org.kosa.exception.DuplicateException;
 import org.kosa.exception.InvalidInputException;
 import org.kosa.exception.RecordNotFoundException;
 import org.kosa.repository.MemberRepository;
 import org.kosa.repository.SellerRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +31,8 @@ public class SellerService {
 
     private final SellerRepository sellerRepository;
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // ========= 조회 =========
     @Transactional(readOnly = true)
@@ -48,10 +54,24 @@ public class SellerService {
     public SellerRes create(SignUpReq req) {
         MemberSignUpInfo memberSignUpInfo = req.getMemberSignUpInfo();
         SellerSignUpInfo sellerSignUpInfo = req.getSellerSignUpInfo();
-        Member cMember = MemberSignUpInfo.toMember(memberSignUpInfo);
-        Member member = memberRepository.save(cMember);
+
+        //Member cMember = MemberSignUpInfo.toMember(memberSignUpInfo);
+        /*cMember.setPassword(passwordEncoder.encode(cMember.getPassword()));
+
+        Member member = memberRepository.save(cMember);*/
+        if(memberRepository.existsByEmail(memberSignUpInfo.getEmail()))
+            throw new DuplicateException("중복된 아이디", "Duplicate Email");
+        Member rMember = MemberSignUpInfo.toMember(memberSignUpInfo);
+        String pwdEnc = bCryptPasswordEncoder.encode(memberSignUpInfo.getPassword());
+        rMember.setPassword(pwdEnc);
+        rMember.setRole(MemberRole.ROLE_SELLER);
+        Member cMember = memberRepository.save(rMember);
+        //return MemberRes.toMemberRes(cMember);
+
+
+        // 판매자 등록
         Seller cSeller = SellerSignUpInfo.toSeller(sellerSignUpInfo);
-        cSeller.setMember(member);
+        cSeller.setMember(cMember);
         if(sellerSignUpInfo.getSellerRegNo().isEmpty())
             cSeller.setRole(SellerRole.Unauthenticated);
         else
