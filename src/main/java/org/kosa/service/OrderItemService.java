@@ -7,8 +7,10 @@ import org.kosa.dto.product.ProductRes;
 import org.kosa.entity.Order;
 import org.kosa.entity.OrderItem;
 import org.kosa.entity.Product;
+import org.kosa.exception.InvalidInputException;
 import org.kosa.exception.RecordNotFoundException;
 import org.kosa.repository.OrderItemRepository;
+import org.kosa.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +23,12 @@ public class OrderItemService {
 
     private final OrderItemRepository orderItemRepository;
     private final OrderService orderService;
+    private final ProductRepository productRepository;
     private final ProductService productService;
 
     @Transactional
     public Long createOrderItem(OrderItemReq orderItemReq) {
-        OrderItem orderItem = orderItemReq.toEntity();
+        OrderItem orderItem = OrderItemReq.toOrderItem(orderItemReq);
         OrderItem savedOrderItem = orderItemRepository.save(orderItem);
         return savedOrderItem.getOrderItemId();
     }
@@ -33,7 +36,7 @@ public class OrderItemService {
     public List<OrderItemRes> findOrderItemsByOrder(Long orderId) {
         Order order = orderService.findOrderById(orderId);
 
-        List<OrderItem> orderItemList = orderItemRepository.findByOrder(order)
+        List<OrderItem> orderItemList = orderItemRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new RecordNotFoundException("해당하는 주문이 존재하지 않습니다.", "NO ORDER"));
 
         return orderItemList.stream()
@@ -41,26 +44,16 @@ public class OrderItemService {
                 .collect(Collectors.toList());
     }
 
-    public List<OrderItemRes> findOrderItemsByProduct(Long productId) {
-        ProductRes productRes = productService.getProductDetail(productId);
-        Product product = Product.builder()
-                .productId(productRes.getProductId())
-                .name(productRes.getName())
-                .description(productRes.getDescription())
-                .price(productRes.getPrice())
-                .category(productRes.getCategory())
-                .discountValue(productRes.getDiscountValue())
-                .isActive(productRes.getIsActive())
-                .createdAt(productRes.getCreatedAt())
-                .updatedAt(productRes.getUpdatedAt())
-                .build();
-
+    /*public List<OrderItemRes> findOrderItemsByProduct(Long productId) {
+        Product product = productRepository.findById(productId)   // PK로 조회(Optional)
+                .orElseThrow(() -> new InvalidInputException(
+                        "상품을 찾을 수 없습니다. id=" + productId, "Not Found"));
         List<OrderItem> orderItemList = orderItemRepository.findByProduct(product);
 
         return orderItemList.stream()
                 .map(OrderItemRes::toOrderItemRes)
                 .collect(Collectors.toList());
-    }
+    }*/
 
     public List<OrderItem> findByQuantityGreaterThan(int quantity) {
         return orderItemRepository.findByQuantityGreaterThan(quantity);

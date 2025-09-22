@@ -3,6 +3,7 @@ package org.kosa.dto.member;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.kosa.entity.Member;
+import org.kosa.enums.MemberRole;
 
 import java.time.LocalDateTime;
 
@@ -20,6 +21,18 @@ public class MemberRes {
     private LocalDateTime createdAt;
     private String name;
     private String role;
+
+    public static Member toMember(MemberRes memberRes) {
+        return Member.builder()
+                .memberId(memberRes.getMemberId())
+                .email(memberRes.getEmail())
+                .phoneNum(memberRes.getPhoneNum())
+                .address(memberRes.getAddress())
+                .name(memberRes.getName())
+                .role(MemberRole.valueOf(memberRes.getRole()))
+                .createdAt(memberRes.getCreatedAt())
+                .build();
+    }
 
     public static MemberRes toMemberRes(Member member){
         return MemberRes.builder()

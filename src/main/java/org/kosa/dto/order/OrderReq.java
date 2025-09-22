@@ -1,6 +1,8 @@
 package org.kosa.dto.order;
 
 import lombok.*;
+import org.kosa.dto.orderItem.OrderItemReq;
+import org.kosa.dto.orderItem.OrderItemRes;
 import org.kosa.entity.Member;
 import org.kosa.entity.Order;
 import org.kosa.entity.OrderItem;
@@ -8,6 +10,7 @@ import org.kosa.enums.OrderStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,15 +29,6 @@ public class OrderReq {
                 .status(orderReq.getStatus())
                 .address(orderReq.getAddress())
                 .orderItemList(orderReq.getOrderItemList())
-                .build();
-    }
-
-    public Order toEntity() {
-        return Order.builder()
-                .member(Member.builder().memberId(this.getMemberId()).build())
-                .status(this.getStatus())
-                .address(this.getAddress())
-                .orderItemList(this.getOrderItemList())
                 .build();
     }
 }
