@@ -23,12 +23,14 @@ public class RabbitMQConfig {
     public static final String PAYMENT_QUEUE = "payment.queue";
     public static final String SHIPPING_QUEUE = "shipping.queue";
     public static final String NOTIFICATION_QUEUE = "notification.queue";
+    public static final String ORDER_STATUS_QUEUE = "order.status.queue";
 
     // Routing Key 정의
     public static final String ORDER_CREATED_ROUTING_KEY = "order.created";
     public static final String INVENTORY_RESERVED_ROUTING_KEY = "inventory.reserved";
     public static final String PAYMENT_PROCESSED_ROUTING_KEY = "payment.processed";
     public static final String SHIPPING_STARTED_ROUTING_KEY = "shipping.started";
+    public static final String ORDER_STATUS_CHANGED_ROUTING_KEY = "order.status.changed";
 
     // Dead Letter Exchange & Queue
     public static final String DLX_EXCHANGE = "order.dlx.exchange";

@@ -20,6 +20,5 @@ public class OrderStatusChangedEvent {
     private Long orderId;           // 주문 ID
     private OrderStatus previousStatus; // 이전 상태
     private OrderStatus newStatus;  // 새로운 상태
-    private String reason;          // 상태 변경 사유
     private LocalDateTime timestamp; // 이벤트 발생 시간
 }
