@@ -42,7 +42,7 @@ public class OrderItemController {
                 .body(orderItemResList);
     }
 
-    @Operation(summary = "특정 상품이 포함된 모든 주문 항목 조회", description = "상품 ID를 사용하여 해당 상품이 포함된 모든 주문 항목을 조회합니다.")
+    /*@Operation(summary = "특정 상품이 포함된 모든 주문 항목 조회", description = "상품 ID를 사용하여 해당 상품이 포함된 모든 주문 항목을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "조회 성공")
     @GetMapping("/product")
     public ResponseEntity<?> findOrderItemsByProduct(@Parameter(description = "조회할 상품의 ID", required = true) @RequestParam Long productId) {
@@ -51,7 +51,7 @@ public class OrderItemController {
         return ResponseEntity
                 .status(200)
                 .body(orderItemResList);
-    }
+    }*/
 
     @Operation(summary = "주문 항목 수정", description = "기존 주문 항목의 정보를 수정합니다.")
     @ApiResponse(responseCode = "201", description = "수정 성공")

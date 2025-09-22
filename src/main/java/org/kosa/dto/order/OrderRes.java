@@ -1,11 +1,9 @@
 package org.kosa.dto.order;
 
-import jakarta.persistence.*;
 import lombok.*;
 import org.kosa.dto.member.MemberRes;
 import org.kosa.dto.orderItem.OrderItemRes;
 import org.kosa.entity.Order;
-import org.kosa.entity.OrderItem;
 import org.kosa.enums.OrderStatus;
 
 import java.time.LocalDateTime;
@@ -24,6 +22,7 @@ public class OrderRes {
     private OrderStatus status;
     private LocalDateTime createdAt;
     private String address;
+    @Builder.Default
     private List<OrderItemRes> orderItemList = new ArrayList<>();
 
     public static OrderRes toOrderRes(Order order) {
