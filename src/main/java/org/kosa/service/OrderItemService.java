@@ -34,11 +34,8 @@ public class OrderItemService {
     }
 
     public List<OrderItemRes> findOrderItemsByOrder(Long orderId) {
-        Order order = orderService.findOrderById(orderId);
-
         List<OrderItem> orderItemList = orderItemRepository.findByOrderId(orderId)
                 .orElseThrow(() -> new RecordNotFoundException("해당하는 주문이 존재하지 않습니다.", "NO ORDER"));
-
         return orderItemList.stream()
                 .map(OrderItemRes::toOrderItemRes)
                 .collect(Collectors.toList());

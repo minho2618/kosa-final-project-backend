@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 public class ProductQuestionService {
 
     private final ProductQuestionRepository productQuestionRepository;
-
     private final ProductQuestionPhotoService productQuestionPhotoService;
     private final ProductQuestionAnswerService productQuestionAnswerService;
     private final ProductService productService;
@@ -63,7 +62,7 @@ public class ProductQuestionService {
     }
 
     public List<ProductQuestionRes> findByMember(Long memberId) {
-        MemberRes memberRes = memberService.findByMemberId(memberId);
+        MemberRes memberRes = memberService.getMemberInfo(memberId);
         Member member = Member.builder()
                 .memberId(memberRes.getMemberId())
                 .build();
