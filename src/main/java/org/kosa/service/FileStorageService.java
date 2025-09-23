@@ -1,10 +1,10 @@
 package org.kosa.service;
 
 import jakarta.annotation.PostConstruct;
-import org.springframework.core.io.Resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kosa.config.FilesUploadConfig;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ImageSaveService {
+public class FileStorageService {
 
     private final FilesUploadConfig filesUploadConfig;
 
@@ -33,34 +33,31 @@ public class ImageSaveService {
                 Files.createDirectories(uploadPath);
                 log.info("업로드 디렉토리 생성: {}", uploadPath.toAbsolutePath());
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException("업로드 디렉토리 초기화 실패", e);
         }
     }
 
-    public String storeImage(MultipartFile file) {
-        // 파일 검증
+    public String storeFile(MultipartFile file) {
         validateFile(file);
 
-        // 고유 파일명 생성
         String originalFilename = file.getOriginalFilename();
         String extension = getFileExtension(originalFilename);
         String uniqueFilename = generateUniqueFilename(extension);
 
         try {
-            // 파일 저장
             Path targetPath = Paths.get(filesUploadConfig.getDir()).resolve(uniqueFilename);
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
 
             log.info("파일 저장 완료: {}", targetPath.toAbsolutePath());
-            return targetPath.toString();
+            return uniqueFilename;
 
         } catch (IOException e) {
             throw new RuntimeException("파일 저장 실패", e);
         }
     }
 
-    public Resource loadImage(String filename) {
+    public Resource loadFile(String filename) {
         try {
             Path filePath = Paths.get(filesUploadConfig.getDir()).resolve(filename);
             Resource resource = new UrlResource(filePath.toUri());
@@ -75,7 +72,7 @@ public class ImageSaveService {
         }
     }
 
-    public boolean deleteImage(String filename) {
+    public boolean deleteFile(String filename) {
         try {
             Path filePath = Paths.get(filesUploadConfig.getDir()).resolve(filename);
             return Files.deleteIfExists(filePath);
@@ -85,27 +82,20 @@ public class ImageSaveService {
         }
     }
 
-    /**
-    파일 검증
-     */
     private void validateFile(MultipartFile file) {
-        // 빈 파일 체크
         if (file.isEmpty()) {
             throw new IllegalArgumentException("빈 파일입니다");
         }
 
-        // 파일 크기 체크 (10MB)
         if (file.getSize() > 10 * 1024 * 1024) {
             throw new IllegalArgumentException("파일 크기가 10MB를 초과합니다");
         }
 
-        // 확장자 체크
         String filename = file.getOriginalFilename();
         if (filename == null || !isAllowedExtension(filename)) {
             throw new IllegalArgumentException("지원하지 않는 파일 형식입니다");
         }
 
-        // MIME 타입 체크
         String contentType = file.getContentType();
         if (contentType == null || !contentType.startsWith("image/")) {
             throw new IllegalArgumentException("이미지 파일이 아닙니다");
@@ -127,5 +117,9 @@ public class ImageSaveService {
 
     private String generateUniqueFilename(String extension) {
         return UUID.randomUUID().toString() + "." + extension;
+    }
+
+    public String extractFilenameFromUrl(String url) {
+        return url.substring(url.lastIndexOf("/") + 1);
     }
 }

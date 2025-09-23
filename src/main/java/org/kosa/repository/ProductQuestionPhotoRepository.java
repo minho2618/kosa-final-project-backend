@@ -9,26 +9,22 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductQuestionPhotoRepository extends JpaRepository<ProductQuestionPhoto, Long> {
-
     // 질문별 사진 조회 (정렬순)
-    List<ProductQuestionPhoto> findByProductQuestionQuestionIdOrderBySortOrder(Long questionId);
+    List<ProductQuestionPhoto> findByProductQuestion_QuestionIdOrderBySortOrder(Long productQuestionId);
 
-    // URL로 조회
-    // ProductQuestionPhoto findByUrl(String url);
-
-    // 질문 ID로 사진 삭제
-    // @Modifying
-    // @Query("DELETE FROM ProductQuestionPhoto p WHERE p.productQuestion.questionId = :questionId")
-    // void deleteByQuestionId(@Param("questionId") Long questionId);
+    // 사진 조회
+    Optional<ProductQuestionPhoto> findByPhotoId(Long photoId);
 
     // 정렬 순서 업데이트
     @Modifying
     @Query("UPDATE ProductQuestionPhoto p SET p.sortOrder = :sortOrder WHERE p.photoId = :photoId")
     int updateSortOrder(@Param("photoId") Long photoId, @Param("sortOrder") int sortOrder);
 
-    // 질문별 사진 개수
-    // long countByProductQuestion(ProductQuestion question);
+    void deleteByProductQuestion_QuestionId(Long productQuestionId);
+
+    int countByProductQuestion(ProductQuestion productQuestion);
 }
