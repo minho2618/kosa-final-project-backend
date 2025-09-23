@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.kosa.dto.order.OrderReq;
 import org.kosa.dto.order.OrderRes;
 import org.kosa.entity.Order;
+import org.kosa.enums.OrderStatus;
 import org.kosa.service.OrderService;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -93,12 +94,12 @@ public class OrderController {
     @PutMapping("/{orderId}")
     public ResponseEntity<?> updateOrder(
             @Parameter(description = "수정할 주문의 ID", required = true) @PathVariable Long orderId,
-            @RequestBody OrderReq orderReq) {
-        orderService.updateOrder(orderId, orderReq);
+            @RequestBody OrderStatus newStatus) {
+        Order updatedOrder = orderService.updateOrder(orderId, newStatus);
 
         return ResponseEntity
                 .status(201)
-                .body(orderReq);
+                .body(updatedOrder);
     }
 
     @Operation(summary = "주문 삭제", description = "주문을 시스템에서 삭제합니다.")

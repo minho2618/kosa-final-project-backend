@@ -23,6 +23,7 @@ public class MemberSignUpInfo {
                 .name(req.getName())
                 .phoneNum(req.getPhoneNum())
                 .address(req.getAddress())
+                .password((req.getPassword()))
                 .build();
     }
 }
