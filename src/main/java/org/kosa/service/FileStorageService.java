@@ -27,16 +27,23 @@ public class FileStorageService {
 
     @PostConstruct
     public void init() {
+        final String dir = filesUploadConfig.getDir();
+        if (dir == null || dir.isBlank()) {
+            throw new IllegalStateException(
+                    "Missing required property 'file.upload.dir' (env: FILE_UPLOAD_DIR).");
+        }
         try {
-            Path uploadPath = Paths.get(filesUploadConfig.getDir());
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
-                log.info("업로드 디렉토리 생성: {}", uploadPath.toAbsolutePath());
+            Path uploadPath = Path.of(dir).toAbsolutePath().normalize();
+            Files.createDirectories(uploadPath); // 존재해도 OK
+            if (!Files.isWritable(uploadPath)) {
+                throw new IllegalStateException("Upload dir not writable: " + uploadPath);
             }
-        } catch (IOException e) {
-            throw new RuntimeException("업로드 디렉토리 초기화 실패", e);
+            log.info("업로드 디렉토리 준비 완료: {}", uploadPath);
+        } catch (Exception e) { // NPE/InvalidPathException 포함 위해 폭넓게
+            throw new IllegalStateException("업로드 디렉토리 초기화 실패", e);
         }
     }
+
 
     public String storeFile(MultipartFile file) {
         validateFile(file);

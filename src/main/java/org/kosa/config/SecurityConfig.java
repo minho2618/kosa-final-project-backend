@@ -7,6 +7,7 @@ import org.kosa.jwt.JWTUtil;
 import org.kosa.jwt.LoginFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -51,7 +52,8 @@ public class SecurityConfig {
         http.formLogin(auth->auth.disable());
         http.httpBasic(auth->auth.disable());
         http.authorizeHttpRequests(auth->auth
-                .requestMatchers("/api/members","api/sellers").permitAll()
+                .requestMatchers("/api/members","/api/sellers").permitAll()
+                .requestMatchers(HttpMethod.GET,"/api/products", "api/products/**").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/api-docs/**").permitAll()
