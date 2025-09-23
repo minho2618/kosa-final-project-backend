@@ -7,8 +7,11 @@ import org.kosa.dto.productQuestionAnswer.ProductQuestionAnswerRes;
 import org.kosa.entity.Member;
 import org.kosa.entity.ProductQuestion;
 import org.kosa.entity.ProductQuestionAnswer;
+import org.kosa.enums.ProductQuestionsStatus;
+import org.kosa.enums.QuestionStatus;
 import org.kosa.exception.RecordNotFoundException;
 import org.kosa.repository.ProductQuestionAnswerRepository;
+import org.kosa.repository.ProductQuestionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,13 +23,16 @@ import java.util.List;
 public class ProductQuestionAnswerService {
 
     private final ProductQuestionAnswerRepository productQuestionAnswerRepository;
+    private final ProductQuestionRepository productQuestionRepository;
 
     @Transactional
     public Long createProductQuestionAnswer(ProductQuestionAnswerReq req) throws RecordNotFoundException {
         ProductQuestionAnswer productQuestionAnswer = ProductQuestionAnswerReq.toProductQuestionAnswer(req);
-
+        ProductQuestion uProductQuestion = productQuestionRepository.findById(productQuestionAnswer.getProductQuestionId()).orElseThrow(()->
+                new RecordNotFoundException("없는 제품 질문입니다.", "Not Found ProductQuestion")
+        );
+        uProductQuestion.setStatus(ProductQuestionsStatus.ANSWERED);
         ProductQuestionAnswer savedProductQuestionAnswer = productQuestionAnswerRepository.save(productQuestionAnswer);
-
         return savedProductQuestionAnswer.getAnswerId();
     }
 

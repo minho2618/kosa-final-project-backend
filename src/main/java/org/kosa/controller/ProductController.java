@@ -38,11 +38,10 @@ public class ProductController {
 
     @Operation(summary = "전체 상품 목록 조회", description = "시스템에 등록된 모든 상품 목록을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = ProductRes.class)))
-    @GetMapping
+    @GetMapping("")
     public List<ProductRes> listAll() {
         return productService.getAllProducts();
     }
-
     @Operation(summary = "상품 상세 정보 조회", description = "상품 ID를 이용하여 특정 상품의 상세 정보를 조회합니다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "조회 성공", content = @Content(schema = @Schema(implementation = ProductRes.class))),
