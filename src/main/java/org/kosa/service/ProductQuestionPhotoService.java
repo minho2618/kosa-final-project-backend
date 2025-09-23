@@ -19,7 +19,7 @@ import java.util.List;
 public class ProductQuestionPhotoService {
 
     private final ProductQuestionPhotoRepository productQuestionPhotoRepository;
-    private final ProductQuestionService productQuestionService;
+    // private final ProductQuestionService productQuestionService;
     private final FileStorageService fileStorageService;
 
     // 상품 문의 모든 사진을 순서대로 가져오기
@@ -35,11 +35,6 @@ public class ProductQuestionPhotoService {
 
     // 여러 사진 저장
     public List<ProductQuestionPhoto> savePhotos(Long questionId, List<MultipartFile> files) {
-        ProductQuestionRes productQuestionRes = productQuestionService.findByIdWithDetails(questionId);
-        ProductQuestion productQuestion = ProductQuestion.builder()
-                .questionId(productQuestionRes.getQuestionId())
-                .build();
-
         List<ProductQuestionPhoto> photos = new ArrayList<>();
         int currentMaxOrder = getCurrentMaxSortOrder(questionId);
 
@@ -51,7 +46,7 @@ public class ProductQuestionPhotoService {
             ProductQuestionPhoto photo = ProductQuestionPhoto.builder()
                     .url(url)
                     .sortOrder(currentMaxOrder + i + 1)
-                    .productQuestion(productQuestion)
+                    .productQuestion(ProductQuestion.builder().questionId(questionId).build())
                     .build();
 
             photos.add(photo);
@@ -62,11 +57,6 @@ public class ProductQuestionPhotoService {
 
     // 단일 사진 저장
     public ProductQuestionPhoto savePhoto(Long questionId, MultipartFile file, Integer sortOrder) {
-        ProductQuestionRes productQuestionRes = productQuestionService.findByIdWithDetails(questionId);
-        ProductQuestion productQuestion = ProductQuestion.builder()
-                .questionId(productQuestionRes.getQuestionId())
-                .build();
-
         String filename = fileStorageService.storeFile(file);
         String url = "/api/images/" + filename;
 
@@ -75,7 +65,7 @@ public class ProductQuestionPhotoService {
         ProductQuestionPhoto photo = ProductQuestionPhoto.builder()
                 .url(url)
                 .sortOrder(order)
-                .productQuestion(productQuestion)
+                .productQuestion(ProductQuestion.builder().questionId(questionId).build())
                 .build();
 
         return productQuestionPhotoRepository.save(photo);
