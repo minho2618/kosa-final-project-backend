@@ -121,7 +121,7 @@ public class ProductQuestionService {
                 productQuestionPhotoService.findByProductQuestionOrderBySortOrder(questionId);
         productQuestionPhotoList
                 .forEach((p) -> {
-                    productQuestionPhotoService.deleteProductQuestionPhoto(p.getPhotoId());
+                    productQuestionPhotoService.deletePhoto(p.getPhotoId());
                 });
 
         productQuestionRepository.deleteById(questionId);
