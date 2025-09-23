@@ -38,6 +38,7 @@ public class ProductQuestionService {
         }
 
         ProductQuestion productQuestion = ProductQuestionReq.toProductQuestion(productQuestionReq);
+        productQuestion.setStatus(ProductQuestionsStatus.OPEN);
         ProductQuestion savedProductQuestion = productQuestionRepository.save(productQuestion);
         return savedProductQuestion.getQuestionId();
     }
@@ -93,7 +94,6 @@ public class ProductQuestionService {
 
     public ProductQuestionRes findByIdWithDetails(Long id) {
         ProductQuestion productQuestion = productQuestionRepository.findByIdWithDetails(id);
-
         return ProductQuestionRes.toProductQuestionRes(productQuestion);
     }
 

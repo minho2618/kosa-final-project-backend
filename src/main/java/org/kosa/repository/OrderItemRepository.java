@@ -13,17 +13,26 @@ import java.util.Optional;
 
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
+    // 주문ID으로 조회
+    @Query("SELECT oi FROM OrderItem oi JOIN FETCH oi.product WHERE oi.orderItemId = :orderItemId")
+    Optional<List<OrderItem>> findByOrderId(@Param("orderItemId") Long orderItemId);
+
     // 주문으로 조회
     //Optional<List<OrderItem>> findByOrder(Order order);
 
-    @Query("SELECT oi FROM OrderItem oi JOIN FETCH oi.product WHERE oi.id = :orderItemId")
-    Optional<List<OrderItem>> findByOrderId(@Param("orderItemId") Long orderItemId);
-
-    // Product로 조회
-    List<OrderItem> findByProduct(Product product);
-
-    @Query("SELECT oi FROM OrderItem oi JOIN FETCH oi.product WHERE oi.product.id = :productId")
+    // Product ID로 조회
+    // List<OrderItem> findByProduct(Product product);
+    @Query("SELECT oi FROM OrderItem oi JOIN FETCH oi.product WHERE oi.product.productId = :productId")
     List<OrderItem> findByProductId(@Param("productId") Long productId);
+
+    // 주문에 있는 상품을 조회
+    @Query("SELECT oi " +
+            "FROM OrderItem oi " +
+            "JOIN FETCH oi.order o " +
+            "JOIN FETCH oi.product p " +
+            "WHERE o.orderId = :orderId AND p.productId = :productId")
+    Optional<OrderItem> findByOrderIdAndProductId(Long orderId, Long productId);
+
     // 수량 범위로 조회
     List<OrderItem> findByQuantityGreaterThan(int quantity);
 
