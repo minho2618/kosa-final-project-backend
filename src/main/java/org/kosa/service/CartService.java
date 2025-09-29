@@ -3,13 +3,16 @@ package org.kosa.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kosa.dto.orderItem.OrderItemReq;
+import org.kosa.entity.CartItem;
 import org.kosa.entity.Product;
+import org.kosa.repository.CartItemRepository;
 import org.kosa.repository.ProductRepository;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,6 +24,7 @@ public class CartService {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final ProductRepository productRepository;
+    private final CartItemRepository cartItemRepository;
 
     private String getCartKey(Long memberId) {
         return "cart:user:" + memberId;
@@ -40,9 +44,19 @@ public class CartService {
      * Redis에서 장바구니 데이터를 가져와 RDBMS에서 상품 상세 정보를 조회해 결합
      */
     public List<OrderItemReq> getOrderItemsFromCart(Long memberId) {
-        Map<Object, Object> cartItems = getCartDataFromRedis(memberId);
-        if (cartItems.isEmpty()) {
-            return new ArrayList<>();
+        Map<Object, Object> cartItems;
+        try {
+            cartItems = getCartDataFromRedis(memberId);
+            if (cartItems.isEmpty()) throw new RuntimeException("Empty or Redis miss");
+        } catch (Exception e) {
+            log.warn("Redis 오류, DB에서 장바구니 조회 fallback. memberId: {}", memberId);
+            cartItems = getCartDataFromDb(memberId);
+            // Redis 복구 시 캐시 재삽입
+            try {
+                cacheCartToRedis(memberId, cartItems);
+            } catch (Exception ex) {
+                log.error("Redis에 장바구니 캐싱 실패: {}", ex.getMessage());
+            }
         }
 
         List<Product> products = getProductsFromRdb(cartItems);
@@ -50,6 +64,39 @@ public class CartService {
                 .collect(Collectors.toMap(Product::getProductId, p -> p));
 
         return getOrderItemReqs(cartItems, productMap, memberId);
+    }
+
+    private Map<Object, Object> getCartDataFromDb(Long memberId) {
+        List<CartItem> items = cartItemRepository.findByMemberId(memberId);
+        Map<Object, Object> cart = new HashMap<>();
+        for (CartItem item : items) {
+            cart.put(item.getProductId().toString(), item.getQuantity());
+        }
+        return cart;
+    }
+
+    public void persistCartToDb(Long memberId) {
+        Map<Object, Object> cartItems = getCartDataFromRedis(memberId);
+        if (cartItems.isEmpty()) return;
+
+        List<CartItem> cartItemEntities = cartItems.entrySet().stream()
+                .map(e -> CartItem.builder()
+                        .memberId(memberId)
+                        .productId(Long.valueOf(e.getKey().toString()))
+                        .quantity((int) e.getValue())
+                        .build())
+                .collect(Collectors.toList());
+
+        // 기존 DB 장바구니는 삭제하고 새로 저장
+        cartItemRepository.deleteByMemberId(memberId);
+        cartItemRepository.saveAll(cartItemEntities);
+    }
+
+    private void cacheCartToRedis(Long memberId, Map<Object, Object> cartItems) {
+        String cartKey = getCartKey(memberId);
+        if (!cartItems.isEmpty()) {
+            redisTemplate.opsForHash().putAll(cartKey, cartItems);
+        }
     }
 
     // Redis에서 장바구니 데이터를 조회하는 역할
