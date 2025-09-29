@@ -3,6 +3,7 @@ package org.kosa.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.kosa.enums.MemberProvider;
 import org.kosa.enums.MemberRole;
 import org.kosa.listener.MemberEntityListener;
 import java.time.LocalDateTime;
@@ -29,6 +30,8 @@ public class Member {
 
     private MemberRole role;
 
+    private MemberProvider provider;
+
     @Column(length = 255)
     private String address;
 
@@ -47,6 +50,7 @@ public class Member {
                 ", password='" + password + '\'' +
                 ", phoneNum='" + phoneNum + '\'' +
                 ", role=" + role +
+                ", provider=" + provider + '\'' +
                 ", address='" + address + '\'' +
                 ", name='" + name + '\'' +
                 ", createdAt=" + createdAt +

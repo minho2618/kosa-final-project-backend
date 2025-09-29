@@ -31,7 +31,6 @@ public class SellerService {
 
     private final SellerRepository sellerRepository;
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     // ========= 조회 =========
@@ -40,6 +39,12 @@ public class SellerService {
         Seller seller = sellerRepository.findById(memberId)
                 .orElseThrow(() -> new RecordNotFoundException("판매자 없습니다", "Not Found Seller"));
         return SellerRes.toSellerRes(seller);
+    }
+
+    @Transactional(readOnly = true)
+    public Seller toSellerByMemberId(Long memberId) {
+        return sellerRepository.findById(memberId)
+                .orElseThrow(() -> new RecordNotFoundException("판매자가 아닙니다", "Not Found Seller"));
     }
 
     @Transactional(readOnly = true)
