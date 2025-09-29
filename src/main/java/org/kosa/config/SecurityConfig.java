@@ -58,10 +58,12 @@ public class SecurityConfig {
         // API 권한 설정 (기존과 동일)
         http.authorizeHttpRequests(auth->auth
                 .requestMatchers("/api/members","/api/sellers").permitAll()
-                .requestMatchers(HttpMethod.GET,"/api/products", "api/products/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/products", "/api/products/**").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/api-docs/**").permitAll()
+                .requestMatchers("/api/gemini/**").permitAll()          // <-- 여길 열어줘야 함
+                // .requestMatchers("/**").permitAll() // ToDo: 테스트용 삭제할 것
                 .anyRequest().authenticated());
 
         http.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -79,12 +81,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
         cfg.setAllowedOriginPatterns(List.of("*"));
-        /*cfg.setAllowedOrigins(List.of("http://localhost", "http://localhost:80", "http://localhost:8080"));*/ // 프론트 출처
+        /*cfg.setAllowedOrigins(List.of("http://localhost:8080"));*/ // 프론트 출처
         cfg.setAllowedMethods(List.of("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
         cfg.setAllowedHeaders(List.of("*"));                     // Authorization 등 허용
         cfg.setExposedHeaders(List.of("Location"));
-
-        cfg.setAllowCredentials(true); // 쿠키/세션/withCredentials
+        cfg.setAllowCredentials(true);                           // 쿠키/세션/withCredentials
         cfg.addExposedHeader("Authorization");
         cfg.setMaxAge(3600L);
 
