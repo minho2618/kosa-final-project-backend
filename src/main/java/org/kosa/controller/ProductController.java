@@ -17,9 +17,11 @@ import org.kosa.dto.product.ProductCardRes;
 import org.kosa.dto.product.ProductReq;
 import org.kosa.dto.product.ProductRes;
 import org.kosa.enums.ProductCategory;
+import org.kosa.security.CustomMemberDetails;
 import org.kosa.service.ProductService;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,8 +74,10 @@ public class ProductController {
     @Operation(summary = "신규 상품 등록", description = "새로운 상품 정보를 시스템에 등록합니다.")
     @ApiResponse(responseCode = "201", description = "등록 성공")
     @PostMapping
-    public ResponseEntity<ProductRes> create(@RequestBody @Valid ProductReq req) {
-        ProductRes res = productService.createProduct(req);
+    public ResponseEntity<ProductRes> create(
+            @AuthenticationPrincipal CustomMemberDetails memberDetails,
+            @RequestBody @Valid ProductReq req) {
+        ProductRes res = productService.createProduct(req, memberDetails.getMember().getMemberId());
         return ResponseEntity
                 .created(URI.create("/api/products/" + res.getProductId()))
                 .body(res);

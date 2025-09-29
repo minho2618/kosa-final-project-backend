@@ -9,6 +9,7 @@ import org.kosa.dto.seller.SellerRes;
 import org.kosa.entity.Product;
 import org.kosa.entity.Seller;
 import org.kosa.enums.ProductCategory;
+import org.kosa.enums.SellerRole;
 import org.kosa.exception.InvalidInputException;
 import org.kosa.exception.RecordNotFoundException;
 import org.kosa.repository.ProductRepository;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final SellerRepository sellerRepository;
+    private final SellerService sellerService;
 
     // ========================= 조회(읽기 전용) =========================
 
@@ -71,9 +72,10 @@ public class ProductService {
     // ========================= 생성/수정/삭제(CUD) =========================
 
     @Transactional                                            // 쓰기 트랜잭션(성공 시 커밋, 예외 시 롤백)
-    public ProductRes createProduct(ProductReq req) {          // 상품 등록
-        Seller seller = null;
+    public ProductRes createProduct(ProductReq req, Long memberId) {          // 상품 등록
+        Seller seller = sellerService.toSellerByMemberId(memberId);
         Product entity = ProductReq.toProduct(req, seller);                           // 필수 필드/기본값은 DTO 단계에서 검증 권장
+        entity.setIsActive(seller.getRole().equals(SellerRole.authenticated));
         Product saved = productRepository.save(entity);            // INSERT & 영속화
         log.info("상품 등록 완료: id={}", saved.getProductId());     // 등록 결과 로깅
         return ProductRes.toProductRes(saved);                             // 응답 DTO 반환
