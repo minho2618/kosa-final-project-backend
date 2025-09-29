@@ -36,6 +36,9 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 
+    //auth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
     //Woo 추가
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
