@@ -6,6 +6,7 @@ import org.kosa.dto.member.MemberRes;
 import org.kosa.dto.member.MemberUpdateReq;
 import org.kosa.dto.member.MemberSignUpInfo;
 import org.kosa.entity.Member;
+import org.kosa.enums.MemberProvider;
 import org.kosa.enums.MemberRole;
 import org.kosa.exception.DuplicateException;
 import org.kosa.exception.InvalidInputException;
@@ -23,6 +24,27 @@ public class MemberService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional
+    public Member saveOrUpdateSocialMember(MemberProvider provider, String email, String name) {
+        Member existingMember = memberRepository.findByEmail(email);
+        if (existingMember != null) {
+            if ("GENERAL".equals(existingMember.getProvider())) {
+                existingMember.setProvider(provider);
+            }
+            existingMember.setName(name);
+            return existingMember;
+        } else {
+            Member newMember = Member.builder()
+                    .provider(provider)
+                    .email(email)
+                    .name(name)
+                    .password(bCryptPasswordEncoder.encode("SOCIAL_DUMMY_" + email))
+                    .role(MemberRole.ROLE_CUSTOMER)
+                    .build();
+            return memberRepository.save(newMember);
+        }
+    }
+
+    @Transactional
     public MemberRes signUp(MemberSignUpInfo memberSignUpInfo) throws DuplicateException, InvalidInputException {
         if(memberRepository.existsByEmail(memberSignUpInfo.getEmail()))
             throw new DuplicateException("중복된 아이디", "Duplicate Email");
@@ -30,6 +52,7 @@ public class MemberService {
         String pwdEnc = bCryptPasswordEncoder.encode(memberSignUpInfo.getPassword());
         rMember.setPassword(pwdEnc);
         rMember.setRole(MemberRole.ROLE_CUSTOMER);
+        rMember.setProvider(MemberProvider.GENERAL);
         Member cMember = memberRepository.save(rMember);
         return MemberRes.toMemberRes(cMember);
     }
