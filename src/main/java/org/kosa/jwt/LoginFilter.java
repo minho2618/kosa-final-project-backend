@@ -71,6 +71,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter{
         map.put("username", member.getEmail());
         map.put("name", member.getName());
         map.put("address", member.getAddress());
+        map.put("role", member.getRole().name());
 
         Gson gson= new Gson();
         String arr = gson.toJson(map);

@@ -7,6 +7,7 @@ import org.kosa.entity.Product;
 import org.kosa.entity.ProductImage;
 import org.kosa.entity.Seller;
 import org.kosa.enums.ProductCategory;
+import org.kosa.enums.ProductStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,13 +19,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductRes {
-
     private Long productId;
     private String name;
     private String description;
     private BigDecimal price;
     private ProductCategory category;
     private BigDecimal discountValue;
+    private String status;
     private Boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -42,6 +43,7 @@ public class ProductRes {
                 .category(product.getCategory())
                 .discountValue(product.getDiscountValue())
                 .isActive(product.getIsActive())
+                .status(product.getStatus().name())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .seller(product.getSeller() !=null ? SellerRes.toSellerRes(product.getSeller()) : null)

@@ -13,13 +13,14 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.kosa.dto.product.ProductCardRes;
-import org.kosa.dto.product.ProductReq;
-import org.kosa.dto.product.ProductRes;
+import org.kosa.dto.product.*;
 import org.kosa.enums.ProductCategory;
+import org.kosa.enums.ProductStatus;
 import org.kosa.security.CustomMemberDetails;
 import org.kosa.service.ProductService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
@@ -61,6 +62,23 @@ public class ProductController {
     public List<ProductCardRes> listByCategory(
             @Parameter(description = "조회할 상품 카테고리", required = true) @PathVariable ProductCategory category) {
         return productService.getProductsByCategory(category);
+    }
+
+    @GetMapping("/active")
+    public ResponseEntity<?> getProductByActive(){
+        return new ResponseEntity<>(productService.getProductsByIsActive(true), HttpStatus.OK);
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<?> getProductsByStatus(
+            @RequestParam ProductStatus status) {
+        return new ResponseEntity<>(productService.getAllProductsByStatus(status),HttpStatus.OK);
+    }
+
+
+    @GetMapping("/inactive")
+    public ResponseEntity<?> getProductByInActive(){
+        return new ResponseEntity<>(productService.getProductsByIsActive(false), HttpStatus.OK);
     }
 
     @Operation(summary = "상품 이름으로 검색", description = "키워드가 포함된 상품 이름으로 상품을 검색합니다.")
@@ -111,8 +129,9 @@ public class ProductController {
     @ApiResponse(responseCode = "200", description = "상태 변경 성공")
     @PatchMapping("/{productId}/active")
     public ProductRes changeActive(
-            @Parameter(description = "상태를 변경할 상품의 ID", required = true) @PathVariable Long productId,
-            @RequestBody @Valid ActiveReq req) {
+            @Parameter(description = "상태를 변경할 상품의 ID", required = true)
+            @PathVariable Long productId,
+            @RequestBody @Valid ProductActiveReq req) {
         return productService.changeActive(productId, req.isActive());
     }
 
@@ -121,7 +140,7 @@ public class ProductController {
     @PatchMapping("/{productId}/price")
     public ProductRes changePrice(
             @Parameter(description = "가격을 변경할 상품의 ID", required = true) @PathVariable Long productId,
-            @RequestBody @Valid PriceReq req) {
+            @RequestBody @Valid ProductPriceReq req) {
         return productService.changePrice(productId, req.getPrice());
     }
 
@@ -130,32 +149,13 @@ public class ProductController {
     @PatchMapping("/{productId}/discount")
     public ProductRes changeDiscount(
             @Parameter(description = "할인을 변경할 상품의 ID", required = true) @PathVariable Long productId,
-            @RequestBody @Valid DiscountReq req) {
+            @RequestBody @Valid ProductDiscountReq req) {
         return productService.changeDiscount(productId, req.getDiscount());
     }
 
-    @Schema(description = "상품 활성 상태 요청 DTO")
-    @Getter @Setter
-    public static class ActiveReq {
-        @Schema(description = "활성화 여부", example = "true")
-        private boolean active;
-    }
 
-    @Schema(description = "상품 가격 변경 요청 DTO")
-    @Getter @Setter
-    public static class PriceReq {
-        @NotNull
-        @DecimalMin(value = "0.0", inclusive = true, message = "가격은 0 이상이어야 합니다.")
-        @Schema(description = "새로운 가격", example = "15000.00")
-        private BigDecimal price;
-    }
 
-    @Schema(description = "상품 할인액 변경 요청 DTO")
-    @Getter @Setter
-    public static class DiscountReq {
-        @NotNull
-        @DecimalMin(value = "0.0", inclusive = true, message = "할인은 0 이상이어야 합니다.")
-        @Schema(description = "새로운 할인액", example = "1500.00")
-        private BigDecimal discount;
-    }
+
+
+
 }
