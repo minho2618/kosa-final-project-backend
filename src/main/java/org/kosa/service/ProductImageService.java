@@ -11,10 +11,15 @@ import org.kosa.entity.ProductQuestionPhoto;
 import org.kosa.exception.RecordNotFoundException;
 import org.kosa.repository.ProductImageRepository;
 import org.kosa.repository.ProductRepository;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -200,4 +205,20 @@ public class ProductImageService {
         }
         productImageRepository.saveAll(list);
     }
+/*
+    public Resource loadAsResource(String fileName) throws FileNotFoundException, MalformedURLException {
+        // 1. 파일 이름을 기반으로 실제 저장 경로를 계산합니다.
+        Path filePath = rootLocation.resolve(fileName).normalize();
+
+        // 2. Resource 객체를 생성합니다.
+        Resource resource = new UrlResource(filePath.toUri());
+
+        // 3. 파일 존재 여부를 확인합니다.
+        if (resource.exists() || resource.isReadable()) {
+            return resource;
+        } else {
+            // 파일이 없으면 예외를 던집니다. (컨트롤러의 catch 블록으로 이동)
+            throw new FileNotFoundException("Could not read file: " + fileName);
+        }
+    }*/
 }
