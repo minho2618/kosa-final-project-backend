@@ -6,6 +6,6 @@ public enum ProductCategory {
     FRUIT,
     SEAFOOD,
     GRAIN,
-    Guitar
+    ETC
 
 }

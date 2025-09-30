@@ -60,7 +60,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter{
         String role = auth.getAuthority();
 
         String token = jwtUtil.createJwt(
-                customMemberDetails.getMember(), role, 1000L*60*10L);
+                customMemberDetails.getMember(), role, 1000L*60*1000L);
         System.out.println("@@@@@@@@@@@@@@@@@@ getMember "+ customMemberDetails.getMember() +" @@@@@@@@@@@@@@@@@@");
 
         response.addHeader("Authorization", "Bearer " + token);
@@ -71,6 +71,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter{
         map.put("username", member.getEmail());
         map.put("name", member.getName());
         map.put("address", member.getAddress());
+        map.put("role", member.getRole().name());
 
         Gson gson= new Gson();
         String arr = gson.toJson(map);

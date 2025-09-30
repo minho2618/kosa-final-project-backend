@@ -28,8 +28,10 @@ public class Member {
     @Column(length = 20)
     private String phoneNum;
 
+    @Enumerated(EnumType.STRING)
     private MemberRole role;
 
+    @Enumerated(EnumType.STRING)
     private MemberProvider provider;
 
     @Column(length = 255)
