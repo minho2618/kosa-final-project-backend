@@ -9,6 +9,7 @@ import org.kosa.dto.seller.SellerRes;
 import org.kosa.entity.Product;
 import org.kosa.entity.Seller;
 import org.kosa.enums.ProductCategory;
+import org.kosa.enums.ProductStatus;
 import org.kosa.enums.SellerRole;
 import org.kosa.exception.InvalidInputException;
 import org.kosa.exception.RecordNotFoundException;
@@ -39,8 +40,22 @@ public class ProductService {
     }
 
     @Transactional(readOnly = true)
+    public List<ProductRes> getProductsByIsActive(boolean active){
+        return productRepository.findProductByIsActive(active).stream()
+                .map(ProductRes::toProductRes)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<ProductRes> getAllProducts() {                // 전체 목록 -> 간단 DTO 리스트
         return productRepository.findAll().stream()
+                .map(ProductRes::toProductRes)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductRes> getAllProductsByStatus(ProductStatus status) {                // 전체 목록 -> 간단 DTO 리스트
+        return productRepository.findProductByStatus(status).stream()
                 .map(ProductRes::toProductRes)
                 .collect(Collectors.toList());
     }
@@ -76,6 +91,10 @@ public class ProductService {
         Seller seller = sellerService.toSellerByMemberId(memberId);
         Product entity = ProductReq.toProduct(req, seller);                           // 필수 필드/기본값은 DTO 단계에서 검증 권장
         entity.setIsActive(seller.getRole().equals(SellerRole.authenticated));
+        if (entity.getIsActive() == false)
+            entity.setStatus(ProductStatus.PENDING);
+        else
+            entity.setStatus(ProductStatus.APPROVED);
         Product saved = productRepository.save(entity);            // INSERT & 영속화
         log.info("상품 등록 완료: id={}", saved.getProductId());     // 등록 결과 로깅
         return ProductRes.toProductRes(saved);                             // 응답 DTO 반환

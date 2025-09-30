@@ -2,8 +2,10 @@ package org.kosa.repository;
 
 import org.kosa.entity.Product;
 import org.kosa.enums.ProductCategory;
+import org.kosa.enums.ProductStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +18,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     // 상품 검색 기능(BUY-SRCH-002)
     @Query(value = "select p from Product p where p.name like %:name%")
     Optional<List<Product>> searchProductByName(String name);
-    
+
+    @Query("SELECT p FROM Product p JOIN FETCH p.seller WHERE p.isActive = :isActive")
+    List<Product> findProductByIsActive(@Param("isActive") boolean active);
+
+    @Query("SELECT p FROM Product p JOIN FETCH p.seller WHERE p.status = :status")
+    List<Product> findProductByStatus(@Param("status") ProductStatus status);
     // 필터링 기능(BUY-SRCH-003)은 프론트에서 처리
 
     // 상품 상세 정보(BUY-PROD-001)

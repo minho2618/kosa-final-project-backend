@@ -6,12 +6,20 @@ import org.kosa.dto.productImage.ProductImageReq;
 import org.kosa.dto.productImage.ProductImageRes;
 import org.kosa.entity.Product;
 import org.kosa.entity.ProductImage;
+import org.kosa.entity.ProductQuestion;
+import org.kosa.entity.ProductQuestionPhoto;
 import org.kosa.exception.RecordNotFoundException;
 import org.kosa.repository.ProductImageRepository;
 import org.kosa.repository.ProductRepository;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -23,7 +31,7 @@ public class ProductImageService {
 
     private final ProductRepository productRepository;
     private final ProductImageRepository productImageRepository;
-
+    private final FileStorageService fileStorageService;
     // ================= 조회 =================
 
     /** 상품별 이미지 목록(정렬 순) */
@@ -48,28 +56,34 @@ public class ProductImageService {
 
     // ================= 생성 =================
 
+    public List<ProductImage> findByProduct_ProductIdOrderBySortOrderAsc(Long productId) {
+        return productImageRepository.findByProduct_ProductIdOrderBySortOrderAsc(productId);
+    }
+    private int getCurrentMaxSortOrder(Long questionId) {
+        List<ProductImage> photos = findByProduct_ProductIdOrderBySortOrderAsc(questionId);
+        return photos.isEmpty() ? 0 : photos.get(photos.size() - 1).getSortOrder();
+    }
     /** 단건 추가 (sortOrder 미지정 시 다음 순번) */
     @Transactional
-    public ProductImageRes add(Long productId, ProductImageReq req) {
+    public List<ProductImage> add(Long productId, List<MultipartFile> files) {
         Product product = ensureProduct(productId);
+        List<ProductImage> photos = new ArrayList<>();
+        int currentMaxOrder = getCurrentMaxSortOrder(productId);
+        for (int i = 0; i < files.size(); i++) {
+            MultipartFile file = files.get(i);
+            String filename = fileStorageService.storeFile(file);
+            String url = "/api/images/" + filename;
 
-        int nextSort = nextSortOrder(productId);
-        Integer reqSort = req.getSortOrder(); // ProductImageReq.sortOrder 가 Integer 라고 가정
-        int finalSort = (reqSort == null || reqSort <= 0) ? nextSort : reqSort;
+            ProductImage photo = ProductImage.builder()
+                    .url(url)
+                    .sortOrder(currentMaxOrder + i + 1)
+                    .product(Product.builder().productId(productId).build())
+                    .build();
 
-        ProductImage toSave = ProductImage.builder()
-                .url(req.getUrl())
-                .altText(req.getAltText())
-                .sortOrder(finalSort)
-                .product(product)
-                .build();
+            photos.add(photo);
+        }
 
-        ProductImage saved = productImageRepository.save(toSave);
-        // 중간에 끼워넣은 경우 정렬 보정
-        normalizeSort(productId);
-        log.info("이미지 등록: productId={}, imageId={}, sort={}", productId, saved.getImageId(), saved.getSortOrder());
-
-        return ProductImageRes.toProductImageRes(saved);
+        return  productImageRepository.saveAll(photos);
     }
 
     /** 전체 교체(기존 삭제 후 일괄 저장) */
@@ -191,4 +205,20 @@ public class ProductImageService {
         }
         productImageRepository.saveAll(list);
     }
+/*
+    public Resource loadAsResource(String fileName) throws FileNotFoundException, MalformedURLException {
+        // 1. 파일 이름을 기반으로 실제 저장 경로를 계산합니다.
+        Path filePath = rootLocation.resolve(fileName).normalize();
+
+        // 2. Resource 객체를 생성합니다.
+        Resource resource = new UrlResource(filePath.toUri());
+
+        // 3. 파일 존재 여부를 확인합니다.
+        if (resource.exists() || resource.isReadable()) {
+            return resource;
+        } else {
+            // 파일이 없으면 예외를 던집니다. (컨트롤러의 catch 블록으로 이동)
+            throw new FileNotFoundException("Could not read file: " + fileName);
+        }
+    }*/
 }

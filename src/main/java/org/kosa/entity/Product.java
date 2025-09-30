@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.kosa.dto.productImage.ProductImageRes;
 import org.kosa.enums.ProductCategory;
+import org.kosa.enums.ProductStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -33,7 +34,12 @@ public class Product {
 
     private ProductCategory category;
 
+    private String farmName;
+
     private BigDecimal discountValue;
+
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
 
     private Boolean isActive;
 
