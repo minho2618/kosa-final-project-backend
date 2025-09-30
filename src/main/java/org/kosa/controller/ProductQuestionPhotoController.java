@@ -3,10 +3,15 @@ package org.kosa.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.kosa.dto.image.ImageUploadResponse;
+import org.kosa.dto.productQuestionPhoto.ProductQuestionPhotoRes;
 import org.kosa.entity.ProductQuestionPhoto;
 import org.kosa.exception.RecordNotFoundException;
+import org.kosa.service.GcsImageService;
+import org.kosa.service.ProductQuestionAnswerService;
 import org.kosa.service.ProductQuestionPhotoService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Tag(name = "ProductQuestionPhoto", description = "상품 문의 사진 API")
 @RestController
@@ -28,6 +34,8 @@ import java.util.Map;
 public class ProductQuestionPhotoController {
 
     private final ProductQuestionPhotoService photoService;
+    private final GcsImageService gcsImageService;
+    private final ProductQuestionPhotoService productQuestionPhotoService;
 
     // 단일 사진 업로드
     @Operation(summary = "단일 사진 업로드", description = "단일한 사진을 업로드합니다.")
@@ -157,6 +165,46 @@ public class ProductQuestionPhotoController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
                 .body(resource);
     }
+
+    // Google Cloud Storage
+    /**
+     * 여러 장 이미지를 업로드 순서대로 저장합니다.
+     * - 프런트에서 'files' 필드를 업로드 순서대로 전송하면 그 순서가 보존됩니다.
+     * - groupId는 동일 묶음을 식별하기 위한 값(게시글 ID/주문 ID/UUID 등)
+     */
+    @PostMapping(
+            path = "/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ImageUploadResponse uploadOrdered(
+            @RequestParam @NotBlank String groupId,
+            @RequestPart("files") List<MultipartFile> files
+    ) {
+        return gcsImageService.uploadOrdered("question", groupId, files);
+    }
+
+    /**
+     * 특정 groupId의 이미지들을 업로드 순서대로 조회
+     * -> URL 목록을 반환
+     */
+    @GetMapping("/download/{groupId}")
+    public List<ImageUploadResponse.Item> getImages(@PathVariable String groupId) {
+        List<ProductQuestionPhoto> records =  productQuestionPhotoService
+                .findByProductQuestionOrderBySortOrder(Long.getLong(groupId));
+
+        return records.stream()
+                .map(r -> new ImageUploadResponse.Item(
+                        r.getSortOrder(),
+                        r.getUrl(),
+                        // Public-read라면
+                        "https://storage.googleapis.com/" + "question" + "/" + r.getPhotoId(),
+                        // Private라면 signedUrl 발급하는 로직 필요
+                        null
+                ))
+                .collect(Collectors.toList());
+    }
+
 
     private String determineContentType(String filename) {
         String extension = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
