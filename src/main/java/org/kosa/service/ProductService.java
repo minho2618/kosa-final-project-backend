@@ -75,7 +75,7 @@ public class ProductService {
     public ProductRes createProduct(ProductReq req, Long memberId) {          // 상품 등록
         Seller seller = sellerService.toSellerByMemberId(memberId);
         Product entity = ProductReq.toProduct(req, seller);                           // 필수 필드/기본값은 DTO 단계에서 검증 권장
-        entity.setIsActive(seller.getRole().equals(SellerRole.authenticated));
+        entity.setIsActive(seller.getRole().equals(SellerRole.AUTHENTICATED));
         Product saved = productRepository.save(entity);            // INSERT & 영속화
         log.info("상품 등록 완료: id={}", saved.getProductId());     // 등록 결과 로깅
         return ProductRes.toProductRes(saved);                             // 응답 DTO 반환
