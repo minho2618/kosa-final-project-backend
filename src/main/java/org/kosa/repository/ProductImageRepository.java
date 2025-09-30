@@ -13,6 +13,7 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, Long
     // 특정 상품 ID로 이미지 전체 조회
     List<ProductImage> findByProduct_ProductId(Long productId);
 
+
     // ===== BUY-PROD-001: 상세 이미지 노출(정렬) =====
     List<ProductImage> findByProduct_ProductIdOrderBySortOrderAsc(Long productId);
 

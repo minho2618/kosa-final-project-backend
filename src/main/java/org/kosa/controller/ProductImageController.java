@@ -8,10 +8,15 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.kosa.dto.productImage.ProductImageReq;
 import org.kosa.dto.productImage.ProductImageRes;
+import org.kosa.entity.ProductImage;
+import org.kosa.entity.ProductQuestionPhoto;
 import org.kosa.service.ProductImageService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.util.List;
@@ -42,14 +47,13 @@ public class ProductImageController {
     @Operation(summary = "상품 이미지 추가", description = "특정 상품에 새로운 이미지를 추가합니다. (sortOrder 미지정 시 마지막 순서로 자동 지정)")
     @ApiResponse(responseCode = "201", description = "추가 성공")
     @PostMapping
-    public ResponseEntity<ProductImageRes> add(
-            @Parameter(description = "이미지를 추가할 상품 ID") @PathVariable Long productId,
-            @RequestBody @Valid ProductImageReq req) {
-        ProductImageRes res = productImageService.add(productId, req);
-        return ResponseEntity
-                .created(URI.create(String.format("/api/products/%d/images/%d", productId, res.getImageId())))
-                .body(res);
+    public ResponseEntity<?> add(
+            @PathVariable Long productId,
+            @RequestPart("files") List<MultipartFile> files) {
+         List<ProductImage> res = productImageService.add(productId, files);
+        return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
+
 
     @Operation(summary = "상품 이미지 전체 교체", description = "특정 상품의 모든 이미지를 삭제하고 새로운 이미지 목록으로 교체합니다.")
     @ApiResponse(responseCode = "200", description = "교체 성공")
