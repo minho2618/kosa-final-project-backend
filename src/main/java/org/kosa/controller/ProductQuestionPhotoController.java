@@ -35,7 +35,6 @@ public class ProductQuestionPhotoController {
 
     private final ProductQuestionPhotoService photoService;
     private final GcsImageService gcsImageService;
-    private final ProductQuestionPhotoService productQuestionPhotoService;
 
     // 단일 사진 업로드
     @Operation(summary = "단일 사진 업로드", description = "단일한 사진을 업로드합니다.")
@@ -190,7 +189,7 @@ public class ProductQuestionPhotoController {
      */
     @GetMapping("/download/{groupId}")
     public List<ImageUploadResponse.Item> getImages(@PathVariable String groupId) {
-        List<ProductQuestionPhoto> records =  productQuestionPhotoService
+        List<ProductQuestionPhoto> records =  photoService
                 .findByProductQuestionOrderBySortOrder(Long.getLong(groupId));
 
         return records.stream()
