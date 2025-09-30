@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Tag(name = "ReviewPhoto", description = "리뷰 사진 관리 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/reviews/{reviewId}/photos")
+@RequestMapping("/api/reviews/photos")
 @Validated
 public class ReviewPhotoController {
 
@@ -114,7 +114,7 @@ public class ReviewPhotoController {
     @GetMapping("/download/{groupId}")
     public List<ImageUploadResponse.Item> getImages(@PathVariable String groupId) {
         List<ReviewPhotoRes> records =  reviewPhotoService
-                .listByReview(Long.getLong(groupId));
+                .listByReview(Long.parseLong(groupId));
 
         return records.stream()
                 .map(r -> new ImageUploadResponse.Item(

@@ -6,10 +6,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.kosa.dto.image.ImageUploadResponse;
 import org.kosa.dto.product.ProductRes;
 import org.kosa.entity.*;
-import org.kosa.repository.ProductImageRepository;
-import org.kosa.repository.ProductQuestionPhotoRepository;
-import org.kosa.repository.ProductQuestionRepository;
-import org.kosa.repository.ReviewPhotoRepository;
+import org.kosa.repository.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -27,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 public class GcsImageService {
 
     private final Storage storage;
+    private final ProductRepository productRepository;
+    private final ReviewRepository reviewRepository;
 
     @Value("${app.gcs.bucket}")
     private String bucket;
@@ -137,9 +136,7 @@ public class GcsImageService {
                             .builder()
                             .sortOrder(i)
                             .url(publicRead ? publicUrl : signedUrl)
-                            .product(Product.builder()
-                                    .productId(Long.getLong(groupId))
-                                    .build())
+                            .product(productRepository.findProductByProductId(Long.parseLong(groupId)).orElseThrow())
                             .build());
                     break;
                 case "question":
@@ -147,7 +144,7 @@ public class GcsImageService {
                             .builder()
                             .sortOrder(i)
                             .url(publicRead ? publicUrl : signedUrl)
-                            .productQuestion(productQuestionRepository.findByIdWithDetails(Long.getLong(groupId)))
+                            .productQuestion(productQuestionRepository.findByIdWithDetails(Long.parseLong(groupId)))
                             .build());
                     break;
                 case "review":
@@ -155,9 +152,7 @@ public class GcsImageService {
                             .builder()
                             .sortOrder(i)
                             .url(publicRead ? publicUrl : signedUrl)
-                            .review(Review.builder()
-                                    .reviewId(Long.getLong(groupId))
-                                    .build())
+                            .review(reviewRepository.findById(Long.parseLong(groupId)).orElseThrow())
                             .build());
                     break;
                 default:
