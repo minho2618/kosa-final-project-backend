@@ -1,5 +1,6 @@
 package org.kosa.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,7 @@ public class ProductImage {
             (fetch = FetchType.LAZY)
     @JoinColumn
             (name="product_id")
+    @JsonIgnore
     private Product product;
 
     @Override
