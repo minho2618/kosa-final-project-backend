@@ -12,6 +12,7 @@ public class ProductImageRes {
     private Long imageId;
     private String url;
     private String altText;
+    private Long productId;
     private int sortOrder;
 
     public static ProductImageRes toProductImageRes(ProductImage entity) {
@@ -19,6 +20,7 @@ public class ProductImageRes {
                 .imageId(entity.getImageId())
                 .url(entity.getUrl())
                 .altText(entity.getAltText())
+                .productId(entity.getProduct().getProductId())
                 .sortOrder(entity.getSortOrder())
                 .build();
     }
