@@ -66,7 +66,6 @@ public class ProductImageService {
     /** 단건 추가 (sortOrder 미지정 시 다음 순번) */
     @Transactional
     public List<ProductImage> add(Long productId, List<MultipartFile> files) {
-        Product product = ensureProduct(productId);
         List<ProductImage> photos = new ArrayList<>();
         int currentMaxOrder = getCurrentMaxSortOrder(productId);
         for (int i = 0; i < files.size(); i++) {

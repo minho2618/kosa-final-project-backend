@@ -52,7 +52,7 @@ public class ProductImageController {
 
     @Operation(summary = "상품 이미지 추가", description = "특정 상품에 새로운 이미지를 추가합니다. (sortOrder 미지정 시 마지막 순서로 자동 지정)")
     @ApiResponse(responseCode = "201", description = "추가 성공")
-    @PostMapping
+    @PostMapping("/{productId}")
     public ResponseEntity<?> add(
             @PathVariable Long productId,
             @RequestPart("files") List<MultipartFile> files) {
