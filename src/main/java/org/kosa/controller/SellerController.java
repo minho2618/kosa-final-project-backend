@@ -61,7 +61,7 @@ public class SellerController {
         return sellerService.update(memberId, req);
     }
 
-    @PreAuthorize("hasAuthority('AUTHENTICATED')")
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
     @GetMapping("/seller/dashboard")
     public ResponseEntity<?> sellerDashboard() {
         return ResponseEntity.ok("판매자만 접근 가능합니다");
