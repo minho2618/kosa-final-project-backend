@@ -15,6 +15,8 @@ import org.kosa.exception.InvalidInputException;
 import org.kosa.exception.RecordNotFoundException;
 import org.kosa.repository.ProductRepository;
 import org.kosa.repository.SellerRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +40,12 @@ public class ProductService {
                         "상품을 찾을 수 없습니다. id=" + productId, "Not Found"));
         return ProductRes.toProductRes(product);      // Entity -> DTO
     }
+
+    @Transactional(readOnly = true)
+    public Page<ProductCardRes> getAllProducts(Pageable pageable) {
+        return productRepository.findProductCards(pageable);
+    }
+
 
     @Transactional(readOnly = true)
     public List<ProductRes> getProductsByIsActive(boolean active){
@@ -90,7 +98,7 @@ public class ProductService {
     public ProductRes createProduct(ProductReq req, Long memberId) {          // 상품 등록
         Seller seller = sellerService.toSellerByMemberId(memberId);
         Product entity = ProductReq.toProduct(req, seller);                           // 필수 필드/기본값은 DTO 단계에서 검증 권장
-        entity.setIsActive(seller.getRole().equals(SellerRole.authenticated));
+        entity.setIsActive(seller.getRole().equals(SellerRole.AUTHENTICATED));
         if (entity.getIsActive() == false)
             entity.setStatus(ProductStatus.PENDING);
         else
