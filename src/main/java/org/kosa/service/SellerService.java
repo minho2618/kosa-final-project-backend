@@ -10,6 +10,7 @@ import org.kosa.dto.seller.SellerSignUpInfo;
 import org.kosa.dto.signUp.SignUpReq;
 import org.kosa.entity.Member;
 import org.kosa.entity.Seller;
+import org.kosa.enums.MemberProvider;
 import org.kosa.enums.MemberRole;
 import org.kosa.enums.SellerRole;
 import org.kosa.exception.DuplicateException;
@@ -70,6 +71,7 @@ public class SellerService {
         String pwdEnc = bCryptPasswordEncoder.encode(memberSignUpInfo.getPassword());
         rMember.setPassword(pwdEnc);
         rMember.setRole(MemberRole.ROLE_SELLER);
+        rMember.setProvider(MemberProvider.GENERAL);
         Member cMember = memberRepository.save(rMember);
         //return MemberRes.toMemberRes(cMember);
 
@@ -77,7 +79,7 @@ public class SellerService {
         // 판매자 등록
         Seller cSeller = SellerSignUpInfo.toSeller(sellerSignUpInfo);
         cSeller.setMember(cMember);
-        if(sellerSignUpInfo.getSellerRegNo().isEmpty())
+        if(sellerSignUpInfo.getSellerRegNo().equals("000-00-00000"))
             cSeller.setRole(SellerRole.UNAUTHENTICATED);
         else
             cSeller.setRole(SellerRole.AUTHENTICATED);
