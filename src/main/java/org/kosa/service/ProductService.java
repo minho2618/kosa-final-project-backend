@@ -15,6 +15,8 @@ import org.kosa.exception.InvalidInputException;
 import org.kosa.exception.RecordNotFoundException;
 import org.kosa.repository.ProductRepository;
 import org.kosa.repository.SellerRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +40,12 @@ public class ProductService {
                         "상품을 찾을 수 없습니다. id=" + productId, "Not Found"));
         return ProductRes.toProductRes(product);      // Entity -> DTO
     }
+
+    @Transactional(readOnly = true)
+    public Page<ProductCardRes> getAllProducts(Pageable pageable) {
+        return productRepository.findProductCards(pageable);
+    }
+
 
     @Transactional(readOnly = true)
     public List<ProductRes> getProductsByIsActive(boolean active){

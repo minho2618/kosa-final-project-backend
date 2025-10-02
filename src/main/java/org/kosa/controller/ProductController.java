@@ -18,6 +18,8 @@ import org.kosa.enums.ProductCategory;
 import org.kosa.enums.ProductStatus;
 import org.kosa.security.CustomMemberDetails;
 import org.kosa.service.ProductService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.RequestEntity;
@@ -153,6 +155,11 @@ public class ProductController {
         return productService.changeDiscount(productId, req.getDiscount());
     }
 
+    // ProductController.java
+    @GetMapping("/api/products")
+    public Page<ProductCardRes> getProducts(Pageable pageable) {
+        return productService.getAllProducts(pageable);
+    }
 
 
 
