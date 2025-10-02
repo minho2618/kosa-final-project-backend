@@ -18,6 +18,7 @@ public class ProductImage {
     @Column(length = 200)
     private String altText;
     private int sortOrder;
+    private String imageUrl;   // ← 프런트에서 사용할 대표 이미지 URL
 
     @ManyToOne
             (fetch = FetchType.LAZY)
@@ -35,4 +36,5 @@ public class ProductImage {
                 ", sortOrder=" + sortOrder +
                 '}';
     }
+
 }

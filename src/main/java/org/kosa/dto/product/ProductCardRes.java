@@ -18,6 +18,10 @@ public class ProductCardRes {
     private BigDecimal discountValue;
     private ProductCategory category;
 
+    private String farmName;
+    // ✅ 대표 이미지 URL 추가
+    private String imageUrl;
+
     public static ProductCardRes toProductCardRes(Product product) {
         return ProductCardRes.builder()
                 .productId(product.getProductId())
@@ -25,6 +29,7 @@ public class ProductCardRes {
                 .price(product.getPrice())
                 .discountValue(product.getDiscountValue())
                 .category(product.getCategory())
+                .farmName(product.getFarmName())
                 .build();
     }
 }
