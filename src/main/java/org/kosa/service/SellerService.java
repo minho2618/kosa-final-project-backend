@@ -80,9 +80,9 @@ public class SellerService {
         Seller cSeller = SellerSignUpInfo.toSeller(sellerSignUpInfo);
         cSeller.setMember(cMember);
         if(sellerSignUpInfo.getSellerRegNo().equals("000-00-00000"))
-            cSeller.setRole(SellerRole.Unauthenticated);
+            cSeller.setRole(SellerRole.UNAUTHENTICATED);
         else
-            cSeller.setRole(SellerRole.authenticated);
+            cSeller.setRole(SellerRole.AUTHENTICATED);
         Seller seller = sellerRepository.save(cSeller);
         log.info("판매자 등록 완료: memberId={}", seller.getMemberId());
         return SellerRes.toSellerRes(seller);

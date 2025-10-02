@@ -11,6 +11,7 @@ import org.kosa.dto.seller.SellerRes;
 import org.kosa.dto.signUp.SignUpReq;
 import org.kosa.service.SellerService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,5 +60,12 @@ public class SellerController {
             @RequestBody SellerReq req) {
         return sellerService.update(memberId, req);
     }
+
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
+    @GetMapping("/seller/dashboard")
+    public ResponseEntity<?> sellerDashboard() {
+        return ResponseEntity.ok("판매자만 접근 가능합니다");
+    }
+
 
 }

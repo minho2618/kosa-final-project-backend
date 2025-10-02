@@ -60,7 +60,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter{
         String role = auth.getAuthority();
 
         String token = jwtUtil.createJwt(
-                customMemberDetails.getMember(), role, 1000L*60*1000L);
+                customMemberDetails.getMember(), role, 1000L*60*60*10L);
         System.out.println("@@@@@@@@@@@@@@@@@@ getMember "+ customMemberDetails.getMember() +" @@@@@@@@@@@@@@@@@@");
 
         response.addHeader("Authorization", "Bearer " + token);
