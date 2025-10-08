@@ -41,6 +41,12 @@ public class ProductService {
         return ProductRes.toProductRes(product);      // Entity -> DTO
     }
 
+    public Product getProduct(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new InvalidInputException(
+                "상품을 찾을 수 없습니다. id=" + productId, "Not Found"));;
+        return product;
+    }
+
     @Transactional(readOnly = true)
     public Page<ProductCardRes> getAllProducts(Pageable pageable) {
         return productRepository.findProductCards(pageable);

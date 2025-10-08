@@ -9,23 +9,79 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.kosa.dto.order.OrderReq;
 import org.kosa.dto.order.OrderRes;
 import org.kosa.entity.Order;
 import org.kosa.enums.OrderStatus;
+import org.kosa.security.CustomMemberDetails;
 import org.kosa.service.OrderService;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "Order", description = "주문 관리 API")
 @RestController
 @RequestMapping("/api/orders")
 @RequiredArgsConstructor
+@Slf4j
 public class OrderController {
     private final OrderService orderService;
+
+    @Operation(summary = "결제 준비", description = "장바구니 기반으로 주문을 생성하고 결제 위젯 초기화에 필요한 정보를 반환합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "주문 생성 및 정보 반환 성공"),
+            @ApiResponse(responseCode = "400", description = "장바구니 오류 또는 유효성 검증 실패"),
+    })
+    @PostMapping("/prepare-payment")
+    public ResponseEntity<?> preparePayment(
+            @RequestBody OrderReq orderReq,
+            @AuthenticationPrincipal CustomMemberDetails memberDetails) {
+        Long memberId = memberDetails.getMember().getMemberId();
+        String address = orderReq.getAddress();
+        try {
+            Map<String, Object> paymentInfo = orderService.createOrderForPayment(memberId, address);
+
+            return ResponseEntity
+                    .status(201)
+                    .body(paymentInfo);
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("주문 생성 중 서버 오류: " + e.getMessage());
+        }
+    }
+
+    // ⭐️ 결제 최종 승인 API
+    @Operation(summary = "결제 최종 승인", description = "토스페이먼츠 결제 성공 후 리다이렉트되어 최종 결제를 승인합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "302", description = "결제 성공 후 프론트엔드 성공 페이지로 리다이렉트"),
+            @ApiResponse(responseCode = "302", description = "결제 실패 후 프론트엔드 실패 페이지로 리다이렉트"),
+    })
+    @GetMapping("/success")
+    public String confirmPayment(
+            @RequestParam String paymentKey,
+            @RequestParam String orderId,
+            @RequestParam Long amount) {
+
+        try {
+            orderService.confirmPayment(paymentKey, orderId, amount);
+
+            return "redirect:http://localhost:3000/order/success?orderId=" + orderId;
+
+        } catch (IllegalArgumentException e) {
+            log.error("결제 검증/승인 실패: {}", e.getMessage());
+            return "redirect:http://localhost:3000/order/fail?message=" + e.getMessage();
+        } catch (Exception e) {
+            log.error("결제 승인 중 서버 오류", e);
+            return "redirect:http://localhost:3000/order/fail?message=서버_처리_오류";
+        }
+    }
 
     @Operation(summary = "주문 생성", description = "새로운 주문을 생성합니다.")
     @ApiResponses({

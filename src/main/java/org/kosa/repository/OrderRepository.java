@@ -16,6 +16,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     // 특정 주문 조회
     Optional<Order> findByOrderId(Long orderId);
 
+    Optional<Order> findByTossOrderId(String tossOrderId);
     // 사용자의 전체 주문내역 조회
     Optional<List<Order>> findAllByMember(Member member);
     // Optional<Page<Order>> findAllByMember(Member member, Pageable pageable); ToDo: 페이지네이션 구현
