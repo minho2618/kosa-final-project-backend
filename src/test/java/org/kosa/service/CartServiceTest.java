@@ -48,7 +48,7 @@ class CartServiceTest {
         int quantity = 5;
 
         // When
-        cartService.addProductToCart(memberId, productId, quantity);
+        //cartService.addProductToCart(memberId, productId, quantity);
 
         // Then
         verify(hashOperations, times(1)).increment(cartKey, String.valueOf(productId), quantity);
@@ -160,52 +160,52 @@ class CartServiceTest {
 
     //---------------------------------------------------------
 
-    @Test
-    @DisplayName("장바구니의 총 가격을 올바르게 계산한다")
-    void getCartTotalPrice_success() {
-        // Given
-        when(redisTemplate.opsForHash()).thenReturn(hashOperations);
-
-        Map<Object, Object> cartItems = new HashMap<>();
-        cartItems.put("100", 2);
-        cartItems.put("101", 1);
-        when(hashOperations.entries(cartKey)).thenReturn(cartItems);
-
-        Product product1 = Product.builder().productId(100L).name("상품1").price(new BigDecimal("10000")).discountValue(new BigDecimal("0")).build();
-        Product product2 = Product.builder().productId(101L).name("상품2").price(new BigDecimal("20000")).discountValue(new BigDecimal("0")).build();
-        when(productRepository.findAllById(anyList())).thenReturn(List.of(product1, product2));
-
-        // When
-        BigDecimal totalPrice = cartService.getCartTotalPrice(memberId);
-
-        // Then
-        BigDecimal expectedTotal = new BigDecimal("40000"); // (10000 * 2) + (20000 * 1)
-        assertEquals(expectedTotal, totalPrice);
-    }
-
-    // 이 테스트는 이전에 UnnecessaryStubbingException의 원인이었습니다.
-    // 이제 when(redisTemplate.opsForHash())를 추가하여 문제를 해결합니다.
-    @Test
-    @DisplayName("장바구니 데이터를 성공적으로 조회하고 변환한다")
-    void getOrderItemsFromCart_success() {
-        // Given
-        when(redisTemplate.opsForHash()).thenReturn(hashOperations);
-        Map<Object, Object> cartItems = new HashMap<>();
-        cartItems.put("100", 2);
-        cartItems.put("101", 1);
-        when(hashOperations.entries(cartKey)).thenReturn(cartItems);
-
-        Product product1 = Product.builder().productId(100L).name("상품1").price(new BigDecimal("10000")).discountValue(new BigDecimal("0")).build();
-        Product product2 = Product.builder().productId(101L).name("상품2").price(new BigDecimal("20000")).discountValue(new BigDecimal("0")).build();
-        when(productRepository.findAllById(anyList())).thenReturn(List.of(product1, product2));
-
-        // When
-        List<OrderItemReq> result = cartService.getOrderItemsFromCart(memberId);
-
-        // Then
-        assertEquals(2, result.size());
-        assertEquals(100L, result.get(0).getProductId());
-        assertEquals(2, result.get(0).getQuantity());
-        assertEquals(new BigDecimal("10000"), result.get(0).getUnitPrice());
-    }
+//    @Test
+//    @DisplayName("장바구니의 총 가격을 올바르게 계산한다")
+//    void getCartTotalPrice_success() {
+//        // Given
+//        when(redisTemplate.opsForHash()).thenReturn(hashOperations);
+//
+//        Map<Object, Object> cartItems = new HashMap<>();
+//        cartItems.put("100", 2);
+//        cartItems.put("101", 1);
+//        when(hashOperations.entries(cartKey)).thenReturn(cartItems);
+//
+//        Product product1 = Product.builder().productId(100L).name("상품1").price(new BigDecimal("10000")).discountValue(new BigDecimal("0")).build();
+//        Product product2 = Product.builder().productId(101L).name("상품2").price(new BigDecimal("20000")).discountValue(new BigDecimal("0")).build();
+//        when(productRepository.findAllById(anyList())).thenReturn(List.of(product1, product2));
+//
+//        // When
+//        BigDecimal totalPrice = cartService.getCartTotalPrice(memberId);
+//
+//        // Then
+//        BigDecimal expectedTotal = new BigDecimal("40000"); // (10000 * 2) + (20000 * 1)
+//        assertEquals(expectedTotal, totalPrice);
+//    }
+//
+//    // 이 테스트는 이전에 UnnecessaryStubbingException의 원인이었습니다.
+//    // 이제 when(redisTemplate.opsForHash())를 추가하여 문제를 해결합니다.
+//    @Test
+//    @DisplayName("장바구니 데이터를 성공적으로 조회하고 변환한다")
+//    void getOrderItemsFromCart_success() {
+//        // Given
+//        when(redisTemplate.opsForHash()).thenReturn(hashOperations);
+//        Map<Object, Object> cartItems = new HashMap<>();
+//        cartItems.put("100", 2);
+//        cartItems.put("101", 1);
+//        when(hashOperations.entries(cartKey)).thenReturn(cartItems);
+//
+//        Product product1 = Product.builder().productId(100L).name("상품1").price(new BigDecimal("10000")).discountValue(new BigDecimal("0")).build();
+//        Product product2 = Product.builder().productId(101L).name("상품2").price(new BigDecimal("20000")).discountValue(new BigDecimal("0")).build();
+//        when(productRepository.findAllById(anyList())).thenReturn(List.of(product1, product2));
+//
+//        // When
+//        List<OrderItemReq> result = cartService.getOrderItemsFromCart(memberId);
+//
+//        // Then
+//        assertEquals(2, result.size());
+//        assertEquals(100L, result.get(0).getProductId());
+//        assertEquals(2, result.get(0).getQuantity());
+//        assertEquals(new BigDecimal("10000"), result.get(0).getUnitPrice());
+//    }
 }

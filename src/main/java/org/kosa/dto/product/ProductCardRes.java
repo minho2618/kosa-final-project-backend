@@ -17,9 +17,7 @@ public class ProductCardRes {
     private BigDecimal price;
     private BigDecimal discountValue;
     private ProductCategory category;
-
     private String farmName;
-    // ✅ 대표 이미지 URL 추가
     private String imageUrl;
 
     public static ProductCardRes toProductCardRes(Product product) {
