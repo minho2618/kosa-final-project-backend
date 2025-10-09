@@ -15,12 +15,12 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Shopp Management API")  // API 제목
-                        .description("농산물 거래를 위한 REST API")  // API 설명
+                        .title("Farm To Table API")  // API 제목
+                        .description("농산물 직거래를 위한 REST API")  // API 설명
                         .version("1.0.0")  // API 버전
                         .contact(new Contact()  // 연락처 정보
-                                .name("개발팀")
-                                .email("dev@example.com")));
+                                .name("김선호, 이민호, 우승환")
+                                .email("srrsr14@gmail.com")));
     }
 
 }
