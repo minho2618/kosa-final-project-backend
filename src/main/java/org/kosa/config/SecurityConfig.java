@@ -57,6 +57,7 @@ public class SecurityConfig {
 
         // API 권한 설정 (기존과 동일)
         http.authorizeHttpRequests(auth->auth
+                .requestMatchers("/login").permitAll()
                 .requestMatchers("/api/members","/api/sellers").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/products", "/api/products/**").permitAll()
                 .requestMatchers("/admin").hasRole("ADMIN")
