@@ -23,6 +23,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +34,11 @@ public class ProductImageService {
     private final ProductImageRepository productImageRepository;
     private final FileStorageService fileStorageService;
     // ================= 조회 =================
+
+    @Transactional(readOnly = true)
+    public Optional<ProductImage> findById(Long imageId) {
+        return productImageRepository.findById(imageId);
+    }
 
     /** 상품별 이미지 목록(정렬 순) */
     @Transactional(readOnly = true)

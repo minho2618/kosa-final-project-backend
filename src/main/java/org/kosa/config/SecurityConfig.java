@@ -63,7 +63,11 @@ public class SecurityConfig {
                 .requestMatchers("/admin").hasRole("ADMIN")
                 .requestMatchers("/swagger-ui/**").permitAll()
                 .requestMatchers("/api-docs/**").permitAll()
-                .requestMatchers("/api/gemini/**").permitAll()          // <-- 여길 열어줘야 함
+                .requestMatchers("/api/gemini/**").permitAll()
+                .requestMatchers(HttpMethod.GET,
+                        "/api/products/images/stream/**",
+                        "/api/products/images/proxy").permitAll()
+
                 // .requestMatchers("/**").permitAll() // ToDo: 테스트용 삭제할 것
                 .anyRequest().authenticated());
 
